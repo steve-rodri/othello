@@ -1,8 +1,6 @@
-# project-1
-
 # Othello
 
-[I'm an inline-style link](https://imgur.com/a/wGR3cnV)
+[Wireframe](https://imgur.com/a/wGR3cnV)
 
 **Description**
 
