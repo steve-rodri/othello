@@ -10,9 +10,11 @@ const board = [
 ]
 let turn = 0;
 
-function runGame(){
+
+function startGame(){
   renderBoard();
-  // addScoreboard();
+  newGameDiscs();
+  updateBoardEl();
   document.addEventListener('click', updateChoice);
 }
 
@@ -25,7 +27,7 @@ function updateChoice(e){
   };
 
   console.log(choice.x +" "+ choice.y);
-  checkSurroundings(choice.x, choice.y);
+  console.log( isValidMove(choice.x, choice.y) );
 }
 
 function updateBoardEl(){
@@ -34,6 +36,7 @@ function updateBoardEl(){
 
   for (let x = 0; x < board.length; x++) {
     for (let y = 0; y < board.length; y++) {
+
         if (board[x][y] === 0) {
 
           let newDisc = document.createElement('div');
@@ -59,15 +62,10 @@ function updateBoardEl(){
               spaces[i].appendChild(newDisc);
             }
           }
+          }
 
-        }
     }
   }
-}
-
-function startGame(){
-  newGameDiscs();
-  updateBoardEl();
 }
 
 function newGameDiscs(){
@@ -77,11 +75,22 @@ function newGameDiscs(){
   board[4][4] = 1;
 }
 
-function discColor (disc){
-  if (disc === 1) {
+function discColor (){
+  if (turn) {
     return "white";
-  } else if (disc === 0) {
+  } else {
     return "black";
+  }
+}
+
+function checkColor(x){
+  switch (x) {
+    case 0: return "black";
+      break;
+    case 1: return "white"
+      break;
+    default:
+    break;
   }
 }
 
@@ -99,25 +108,15 @@ function renderBoard(){
 }
 
 function isValidMove(x, y){
-
-  const surroundingDiscs = checkSurroundings(x, y); //array of discs on all sides in immediate vicinity
-
-    for (let i = 0; i < surroundingDiscs.length; i++) {
-      let disc = surroundingDiscs[i];
-
-      if (disc.color === discColor(!turn)) { //color of surrounding Disc is opposite of playerDisc
-
-        if (disc.y === y && (disc.x === x - 1 || disc.x === x + 1)) {
-          checkHorizontally(disc.x, disc.y);
-        } else if (disc.x === x && (disc.y === y - 1 || disc.y === y + 1)) {
-          checkVertical(disc.x, disc.y);
-        } else if ((disc.x === x - 1 && disc.y === y - 1) || (disc.x === x + 1 && disc.y === y + 1)) {
-          checkDiagonalRight(disc.x, disc.y);
-        } else if ((disc.x === x - 1 && disc.y === y - 1) || (disc.x === x + 1 && disc.y === y + 1)) {
-          checkDiagonalLeft(disc.x, disc.y);
-        }
+  const surroundingDiscs = checkSurroundings(x,y);
+  for (var i = 0; i < surroundingDiscs.length; i++) {
+    const disc = surroundingDiscs[i];
+    if (disc.color !== discColor() ) {
+      return true;
+      //checkSurroundings(disc.x, disc.y)
       }
     }
+  return false;
 }
 
 function checkSurroundings(x,y){
@@ -128,12 +127,13 @@ function checkSurroundings(x,y){
           if ( !(xP === 0 && yP === 0) ) {
             if ( !(board[x - xP][y - yP] === 'x') ) {
 
-            surroundingObjects.push({
-                color: `${discColor(board[x - xP][y - yP])}`,
+            surroundingObjects.push(
+                {
+                color: `${checkColor(board[x - xP][y - yP])}`,
                 x: `${x - xP}`,
                 y: `${y - yP}`
-                }
-              );
+                  }
+                );
             }
           }
         }
