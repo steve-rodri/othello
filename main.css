@@ -1,0 +1,66 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html{
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  background-image: url("./images/wood-background.jpg");
+  background-size: cover;
+  display: flex;
+}
+
+aside {
+  background: rgba(15, 15, 15, .8);
+  width: 300px;
+  border-right: 2px solid rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+h1 {
+  color: white;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 50px;
+  font-family: sans-serif;
+}
+
+
+#board {
+  background-image: url("./images/green-felt.jpg");
+  background-size: cover;
+  border: 15px solid rgba(0, 0, 0, 0.8);
+  border-radius: 3px;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  height: 630px;
+  width: 630px;
+}
+
+.space {
+  border: 2.5px solid hsla(360, 0%, 80%, .8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75px;
+  width: 75px;
+}
+
+.space:hover {
+  cursor: pointer;
+}
+
+.disc {
+  height: 75px;
+  width: 75px;
+  border-radius: 100%;
+  margin: auto;
+}
