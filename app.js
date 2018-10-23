@@ -1,5 +1,3 @@
-console.log("I work");
-
 const board = [
   ["x","x","x","x","x","x","x","x"],
   ["x","x","x","x","x","x","x","x"],
@@ -11,7 +9,6 @@ const board = [
   ["x","x","x","x","x","x","x","x"]
 ]
 let turn = 0;
-
 
 function runGame(){
   renderBoard();
@@ -28,23 +25,7 @@ function updateChoice(e){
   };
 
   console.log(choice.x +" "+ choice.y);
-
-  //add disc to board if player can, display win message or switch turn
-  // if (playerCanChoose(choice.x, choice.y)) {
-  // updateBoard(choice.x, choice.y, clickedSpace);
-  //   if () {
-  //      displayWin();
-  //      updateScore();
-  //      setTimeout(resetGame, 1000);
-  //   //if board is full, display tie, reset game
-  // } else if (boardIsFull()) {
-  //     displayTie();
-  //     setTimeout(resetGame, 1000);
-  //   } else {
-  //     switchTurn();
-  //     console.log('switched turn');
-  //   }
-  // }
+  checkSurroundings(choice.x, choice.y);
 }
 
 function updateBoardEl(){
@@ -53,14 +34,12 @@ function updateBoardEl(){
 
   for (let x = 0; x < board.length; x++) {
     for (let y = 0; y < board.length; y++) {
-      console.log(board[x][y]);
         if (board[x][y] === 0) {
 
           let newDisc = document.createElement('div');
           newDisc.className = "disc";
           newDisc.dataset.x = `${x}`;
           newDisc.dataset.y = `${y}`;
-          debugger;
           newDisc.style.backgroundColor = "black";
           for (var i = 0; i < spaces.length; i++) {
             if (spaces[i].dataset.x === `${x}` && spaces[i].dataset.y === `${y}`) {
@@ -74,7 +53,6 @@ function updateBoardEl(){
           newDisc.className = "disc";
           newDisc.dataset.x = `${x}`;
           newDisc.dataset.y = `${y}`;
-          debugger;
           newDisc.style.backgroundColor = "white";
           for (var i = 0; i < spaces.length; i++) {
             if (spaces[i].dataset.x === `${x}` && spaces[i].dataset.y === `${y}`) {
@@ -97,14 +75,14 @@ function newGameDiscs(){
   board[3][4] = 0;
   board[4][3] = 0;
   board[4][4] = 1;
-  console.log(board);
 }
 
-function discType (){
-  if (turn) {
+function discColor (disc){
+  if (disc === 1) {
     return "white";
-  }
+  } else if (disc === 0) {
     return "black";
+  }
 }
 
 function renderBoard(){
@@ -120,19 +98,77 @@ function renderBoard(){
   }
 }
 
-// function playerCanChoose(x,y){
-//   return checkSpaceEmpty(x,y) && canOutFlank(x,y)
+function isValidMove(x, y){
+
+  const surroundingDiscs = checkSurroundings(x, y); //array of discs on all sides in immediate vicinity
+
+    for (let i = 0; i < surroundingDiscs.length; i++) {
+      let disc = surroundingDiscs[i];
+
+      if (disc.color === discColor(!turn)) { //color of surrounding Disc is opposite of playerDisc
+
+        if (disc.y === y && (disc.x === x - 1 || disc.x === x + 1)) {
+          checkHorizontally(disc.x, disc.y);
+        } else if (disc.x === x && (disc.y === y - 1 || disc.y === y + 1)) {
+          checkVertical(disc.x, disc.y);
+        } else if ((disc.x === x - 1 && disc.y === y - 1) || (disc.x === x + 1 && disc.y === y + 1)) {
+          checkDiagonalRight(disc.x, disc.y);
+        } else if ((disc.x === x - 1 && disc.y === y - 1) || (disc.x === x + 1 && disc.y === y + 1)) {
+          checkDiagonalLeft(disc.x, disc.y);
+        }
+      }
+    }
+}
+
+function checkSurroundings(x,y){
+  const surroundingObjects = [];
+    for (let xP = -1; xP < 2 ; xP++) {
+      for (let yP = 1; yP > -2 ; yP--) {
+
+          if ( !(xP === 0 && yP === 0) ) {
+            if ( !(board[x - xP][y - yP] === 'x') ) {
+
+            surroundingObjects.push({
+                color: `${discColor(board[x - xP][y - yP])}`,
+                x: `${x - xP}`,
+                y: `${y - yP}`
+                }
+              );
+            }
+          }
+        }
+      }
+  console.log(surroundingObjects);
+  return surroundingObjects;
+}
+
+// function checkHorizontally(x, y){
 //
-// function checkSpaceEmpty(x,y){
-//   if ( board[x][y] === undefined || board[x][y] === null ) {
-//     console.log("space is empty");
-//     return true;
-//   } else {
-//     console.log("space is NOT empty");
-//     return false;
+//   //check to the right
+//   for (let i = x + 1; i < board.length; i++) {
+//     if ( board[i][y] === turn ) { //check if piece is equal to player piece
+//       return true;
+//     } else if (board[i][y] !== turn) {
+//       return false;
+//     }
+//   }
+//
+//   //check to the left
+//   for (let i = x - 1; i >= 0; i--) {
+//     if (board[x][y] === board[i][y]) {
+//
+//     }
 //   }
 // }
 //
-// function canOutFlank(x,y){
+// function checkVertically(x,y) {
+//
+// }
+//
+// function checkDiagonalRight(x, y){
+//
+// }
+//
+// function checkDiagonalLeft(x, y){
 //
 // }
