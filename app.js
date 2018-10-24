@@ -117,13 +117,41 @@ function opposition(){
 }
 
 function checkDisc(x,y){
-  if (checkVertically(x,y) || checkHorizontally(x,y) ) {
-    switchTurn();
+  const surroundings = checkSurroundings(x,y);
+
+  if (surroundings.length === 0 || board[y][x] !== 'x') {
+    return false;
+  } else if ( checkVertically(x,y) || checkHorizontally(x,y) ){
+      updateBoardEl();
+      switchTurn();
   }
-  updateBoardEl();
 }
 
-function checkVertically (x,y) {
+function checkSurroundings(x,y){ //checks all 8 sides of surroundings from origin
+
+  const surroundingObjects = [];
+  for (let y2 = 1; y2 >= -1 ; y2 -= 1) {
+    for (let x2 = -1; x2 <= 1 ; x2 += 1) {
+        if ( !(x - x2 < 0 || y - y2 < 0 || x - x2 > 7 || y - y2 > 7) ) {
+          if ( !(y2 === 0 && x2 === 0) ) {
+            if ( !(board[y - y2][x - x2] === 'x') ) {
+
+            surroundingObjects.push(
+                {
+                x: `${x - x2}`,
+                y: `${y - y2}`
+                  }
+                );
+            }
+          }
+        }
+      }
+    }
+  console.log(surroundingObjects);
+  return surroundingObjects;
+}
+
+function checkVertically (x,y){
   return checkUp(x,y) || checkDown(x,y);
 }
 
@@ -282,3 +310,5 @@ function checkRight(x,y){
     i += 1;
   }
 }
+
+startGame();
