@@ -8,6 +8,16 @@ const board = [
   ["x","x","x","x","x","x","x","x"],
   ["x","x","x","x","x","x","x","x"]
 ]
+const boardChanges = [
+  ["x","x","x","x","x","x","x","x"],
+  ["x","x","x","x","x","x","x","x"],
+  ["x","x","x","x","x","x","x","x"],
+  ["x","x","x","x","x","x","x","x"],
+  ["x","x","x","x","x","x","x","x"],
+  ["x","x","x","x","x","x","x","x"],
+  ["x","x","x","x","x","x","x","x"],
+  ["x","x","x","x","x","x","x","x"]
+]
 let turn = 0;
 
 function startGame(){
@@ -24,8 +34,38 @@ function updateChoice(e){
     x: parseInt( clickedSpace.dataset.x ),
     y: parseInt( clickedSpace.dataset.y )
   };
+
+  boardChangesUpdate();
+
   checkDisc(choice.x, choice.y);
+
+  if (changesToBoard()) {
+    switchTurn();
+  };
   console.log(turn);
+}
+
+function changesToBoard(){
+  let sumChanges = 0;
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board.length; x++) {
+      let previousState = boardChanges[y][x];
+      let currentState = board[y][x];
+      if (!(previousState === currentState)) {
+        sumChanges +=1;
+      }
+    }
+  }
+
+  return sumChanges > 0;
+}
+
+function boardChangesUpdate(){
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board.length; x++) {
+      boardChanges[y][x] = board[y][x];
+    }
+  }
 }
 
 function clearBoard(){
@@ -120,13 +160,18 @@ function checkDisc(x,y){
 
   if (board[y][x] !== 'x') {
     return false;
-  } else if ( checkVertically(x,y) || checkHorizontally(x,y) || checkDiagonallyBackSlash(x,y) || checkDiagonallyForwardSlash(x,y) ){
-      updateBoardEl();
-      switchTurn();
+  } else {
+
+    checkVertical(x,y),
+    checkHorizontal(x,y),
+    checkDiagonalBackSlash(x,y),
+    checkDiagonalForwardSlash(x,y)
+    updateBoardEl();
+
   }
 }
 
-function checkVertically (x,y){
+function checkVertical(x,y){
   return checkUp(x,y) || checkDown(x,y);
 }
 
@@ -138,7 +183,7 @@ function checkDown(x,y){
     switch (board[i][x]) {
 
       case "x":
-        return false;
+      return false;
         break;
 
       case opposition():
@@ -152,7 +197,7 @@ function checkDown(x,y){
 
       case turn:
         if (opposingDiscs.length === 0) {
-          return false;
+          break;
         } else {
           board[y][x] = turn;
           //flip discs
@@ -160,7 +205,6 @@ function checkDown(x,y){
             let disc = opposingDiscs[w];
             board[disc.y][disc.x] = turn;
           }
-          return true;
         }
         break;
 
@@ -180,7 +224,7 @@ function checkUp(x,y){
     switch (board[i][x]) {
 
       case "x":
-        return false;
+      return false;
         break;
 
       case opposition():
@@ -194,7 +238,7 @@ function checkUp(x,y){
 
       case turn:
         if (opposingDiscs.length === 0) {
-          return false;
+          break;
         } else {
           board[y][x] = turn;
           //flip discs
@@ -202,7 +246,6 @@ function checkUp(x,y){
             let disc = opposingDiscs[w];
             board[disc.y][disc.x] = turn;
           }
-          return true;
         }
         break;
 
@@ -214,7 +257,7 @@ function checkUp(x,y){
   }
 }
 
-function checkHorizontally(x,y){
+function checkHorizontal(x,y){
   return checkLeft(x,y) || checkRight(x,y);
 }
 
@@ -226,7 +269,7 @@ function checkLeft(x,y){
     switch (board[y][i]) {
 
       case "x":
-        return false;
+      return false;
         break;
 
       case opposition():
@@ -248,7 +291,6 @@ function checkLeft(x,y){
             let disc = opposingDiscs[w];
             board[disc.y][disc.x] = turn;
           }
-          return true;
         }
         break;
 
@@ -268,7 +310,7 @@ function checkRight(x,y){
     switch (board[y][i]) {
 
       case "x":
-        return false;
+      return false;
         break;
 
       case opposition():
@@ -290,7 +332,6 @@ function checkRight(x,y){
             let disc = opposingDiscs[w];
             board[disc.y][disc.x] = turn;
           }
-          return true;
         }
         break;
 
@@ -302,7 +343,7 @@ function checkRight(x,y){
   }
 }
 
-function checkDiagonallyBackSlash(x,y){
+function checkDiagonalBackSlash(x,y){
   return checkDiagonalBackSlashUp(x,y) || checkDiagonalBackSlashDown(x,y);
 }
 
@@ -315,7 +356,7 @@ function checkDiagonalBackSlashUp(x,y){
     switch (board[y2][x2]) {
 
       case "x":
-        return false;
+      return false;
         break;
 
       case opposition():
@@ -337,7 +378,6 @@ function checkDiagonalBackSlashUp(x,y){
             let disc = opposingDiscs[w];
             board[disc.y][disc.x] = turn;
           }
-          return true;
         }
         break;
 
@@ -359,7 +399,7 @@ function checkDiagonalBackSlashDown(x,y){
     switch (board[y2][x2]) {
 
       case "x":
-        return false;
+      return false;
         break;
 
       case opposition():
@@ -373,7 +413,7 @@ function checkDiagonalBackSlashDown(x,y){
 
       case turn:
         if (opposingDiscs.length === 0) {
-          return false;
+          break;
         } else {
           board[y][x] = turn;
           //flip discs
@@ -381,7 +421,6 @@ function checkDiagonalBackSlashDown(x,y){
             let disc = opposingDiscs[w];
             board[disc.y][disc.x] = turn;
           }
-          return true;
         }
         break;
 
@@ -394,7 +433,7 @@ function checkDiagonalBackSlashDown(x,y){
   }
 }
 
-function checkDiagonallyForwardSlash(x,y){
+function checkDiagonalForwardSlash(x,y){
   return checkDiagonalForwardSlashUp(x,y) || checkDiagonalForwardSlashDown(x,y);
 }
 
@@ -407,7 +446,7 @@ function checkDiagonalForwardSlashUp(x,y){
     switch (board[y2][x2]) {
 
       case "x":
-        return false;
+      return false;
         break;
 
       case opposition():
@@ -429,7 +468,6 @@ function checkDiagonalForwardSlashUp(x,y){
             let disc = opposingDiscs[w];
             board[disc.y][disc.x] = turn;
           }
-          return true;
         }
         break;
 
@@ -451,7 +489,7 @@ function checkDiagonalForwardSlashDown(x,y){
     switch (board[y2][x2]) {
 
       case "x":
-        return false;
+      return false;
         break;
 
       case opposition():
@@ -473,7 +511,6 @@ function checkDiagonalForwardSlashDown(x,y){
             let disc = opposingDiscs[w];
             board[disc.y][disc.x] = turn;
           }
-          return true;
         }
         break;
 
