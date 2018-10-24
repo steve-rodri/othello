@@ -25,7 +25,7 @@ function updateChoice(e){
     y: parseInt( clickedSpace.dataset.y )
   };
   checkDisc(choice.x, choice.y);
-  switchTurn();
+  console.log(turn);
 }
 
 function clearBoard(){
@@ -152,6 +152,7 @@ function checkDown(x,y){
             let disc = opposingDiscs[w];
             board[disc.y][disc.x] = turn;
           }
+          switchTurn();
         }
         break;
 
@@ -189,6 +190,7 @@ function checkUp(x,y){
             let disc = opposingDiscs[w];
             board[disc.y][disc.x] = turn;
           }
+          switchTurn();
         }
         break;
 
