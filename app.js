@@ -108,33 +108,34 @@ function renderBoard(){
 }
 
 function isValidMove(x, y){
+  const opposingDiscsOnPerimeter = findOpposingDiscs(x,y);//finds all opposite color discs around choice
 
-  const opposingDiscs = findOpposingDiscs(x,y);
-
-  if (opposingDiscs === []) {
+  if (opposingDiscsOnPerimeter === []) { //returns false if there are no opposing discs
     return false;
-  } else {
+  } else { //if there are 1 or multiple opposing discs in path, capped with a player disc
 
-    const discsInPath = [];
+  }
+}
 
-    for (let i = 0; i < opposingDiscs.length; i++) {
+function opposingDiscsInPath (x,y, opposingDiscsOnPerimeter){
 
-      const opposingDisc = opposingDiscs[i]; //grabs an opposing disc in immediate vicinity of choice
-      const relation = findRelationship(x,y, opposingDisc); //finds relationship between opposing disk from choice
-      const nextDiscInPath = checkNextDiscInPath(opposingDisc.x, opposingDisc.y, relation.x, relation.y); //finds next disc in direction of opposing disc
+  const opposingDiscsInPath = [];
 
-      if (nextDiscInPath.color === discColor()) { //if next disc in path equals player disc return true
-        return true;
-      } else if (nextDiscInPath.color === opposingDisc.color) { //if next disc equals opposing disc, check next disc in path direction
-        discsInPath.push(nextDiscInPath);
-      }
+  for (let i = 0; i < opposingDiscsOnPerimeter.length; i++) {
 
+    const opposingDisc = opposingDiscsOnPerimeter[i]; //grabs an opposing disc
+    const relationship = findRelationship(x, y, opposingDisc.x, opposingDisc.y); //finds relationship between opposing disk and choice
+    const nextDiscInPath = checkNextDiscInPath(opposingDisc.x, opposingDisc.y, relationship.x, relationship.y); //finds next disc in direction of opposing disc
 
+    if (nextDiscInPath.color === discColor()) { //if next disc in path equals player disc return true
+      return false;
+    } else if (nextDiscInPath.color === opposingDisc.color) { //if next disc equals opposing disc, check next disc in path direction
+      discsInPath.push(nextDiscInPath);
     }
   }
 }
 
-function findOpposingDiscs (x, y) {
+function findOpposingDiscs(x, y) {
   let opposingDiscs = [];
 
   const surroundings = checkSurroundings(x,y);
@@ -149,9 +150,9 @@ function findOpposingDiscs (x, y) {
 
 } //returns array of Opposing discs
 
-function findRelationship(x,y, opposingDisc){
-    let xDiff = x - opposingDisc.x;
-    let yDiff = y - opposingDisc.y;
+function findRelationship(x,y,x2,y2){
+    let xDiff = x - x2;
+    let yDiff = y - y2;
   }
   return {x: xDiff, y: yDiff};
 } //finds x,y relationship between opposing disc and origin
@@ -179,12 +180,12 @@ function checkSurroundings(x,y){ //checks all 8 sides of surroundings from origi
   return surroundingObjects;
 }
 
-function checkNextDiscInPath(x,y,z,a){
-  if ( !(board[x-z][y-z] === 'x') ) {
+function checkNextDiscInPath(x,y,x2,y2){
+  if ( !(board[x-x2][y-y2] === 'x') ) {
     const disc = {
-      color: `${checkColor(board[x-z][y-a])}`,
-      x: `${x-z}`,
-      y = `${y-a}`
+      color: `${checkColor(board[x-x2][y-y2])}`,
+      x: `${x-x2}`,
+      y = `${y-y2}`
     };
     return disc;
   }
