@@ -10,9 +10,8 @@ const board = [
 ]
 let turn = 0;
 
-
 function startGame(){
-  renderBoard();
+  createSpaces();
   newGameDiscs();
   updateBoardEl();
   document.addEventListener('click', updateChoice);
@@ -25,19 +24,29 @@ function updateChoice(e){
     x: parseInt( clickedSpace.dataset.x ),
     y: parseInt( clickedSpace.dataset.y )
   };
+  checkDisc(choice.x, choice.y);
+  switchTurn();
+}
 
-  console.log(choice.x +" "+ choice.y);
-  console.log( isValidMove(choice.x, choice.y) );
+function clearBoard(){
+  const spaces = document.querySelectorAll('.space');
+  for (var i = 0; i < spaces.length; i++) {
+    while (spaces[i].firstChild) {
+    spaces[i].removeChild(spaces[i].firstChild);
+    }
+  }
 }
 
 function updateBoardEl(){
   const boardEl = document.querySelector('#board');
   const spaces = document.querySelectorAll('.space');
 
-  for (let x = 0; x < board.length; x++) {
-    for (let y = 0; y < board.length; y++) {
+  clearBoard();
 
-        if (board[x][y] === 0) {
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board.length; x++) {
+
+        if (board[y][x] === 0) {
 
           let newDisc = document.createElement('div');
           newDisc.className = "disc";
@@ -50,7 +59,7 @@ function updateBoardEl(){
             }
           }
 
-        } else if (board[x][y] === 1) {
+        } else if (board[y][x] === 1) {
 
           let newDisc = document.createElement('div');
           newDisc.className = "disc";
@@ -68,33 +77,7 @@ function updateBoardEl(){
   }
 }
 
-function newGameDiscs(){
-  board[3][3] = 1;
-  board[3][4] = 0;
-  board[4][3] = 0;
-  board[4][4] = 1;
-}
-
-function discColor (){
-  if (turn) {
-    return "white";
-  } else {
-    return "black";
-  }
-}
-
-function checkColor(x){
-  switch (x) {
-    case 0: return "black";
-      break;
-    case 1: return "white"
-      break;
-    default:
-    break;
-  }
-}
-
-function renderBoard(){
+function createSpaces(){
   const boardEl = document.querySelector("#board");
   for (let y = 0; y < 8; y++) {
     for (let x = 0; x < 8 ; x++) {
@@ -107,86 +90,112 @@ function renderBoard(){
   }
 }
 
-function isValidMove(x, y){
-  const opposingDiscsOnPerimeter = findOpposingDiscs(x,y);//finds all opposite color discs around choice
+function newGameDiscs(){
+  board[3][3] = 1;
+  board[3][4] = 0;
+  board[4][3] = 0;
+  board[4][4] = 1;
+}
 
-  if (opposingDiscsOnPerimeter === []) { //returns false if there are no opposing discs
-    return false;
-  } else { //if there are 1 or multiple opposing discs in path, capped with a player disc
-
+function switchTurn(){
+  switch (turn) {
+    case 1: turn = 0;
+      break;
+    case 0: turn = 1;
+      break;
+    default:
   }
 }
 
-function opposingDiscsInPath (x,y, opposingDiscsOnPerimeter){
-
-  const opposingDiscsInPath = [];
-
-  for (let i = 0; i < opposingDiscsOnPerimeter.length; i++) {
-
-    const opposingDisc = opposingDiscsOnPerimeter[i]; //grabs an opposing disc
-    const relationship = findRelationship(x, y, opposingDisc.x, opposingDisc.y); //finds relationship between opposing disk and choice
-    const nextDiscInPath = checkNextDiscInPath(opposingDisc.x, opposingDisc.y, relationship.x, relationship.y); //finds next disc in direction of opposing disc
-
-    if (nextDiscInPath.color === discColor()) { //if next disc in path equals player disc return true
-      return false;
-    } else if (nextDiscInPath.color === opposingDisc.color) { //if next disc equals opposing disc, check next disc in path direction
-      discsInPath.push(nextDiscInPath);
-    }
+function opposition(){
+  switch (turn) {
+    case 1: return 0;
+      break;
+    case 0: return 1;
+    default:
   }
 }
 
-function findOpposingDiscs(x, y) {
+function checkDisc(x,y){
+  checkVertically(x,y);
+  updateBoardEl();
+}
+
+function checkVertically (x,y) {
+  checkUp(x,y);
+  checkDown(x,y);
+}
+
+function checkDown(x,y){
   let opposingDiscs = [];
+  let i = y + 1;
+  while (i < board.length - 1) {
 
-  const surroundings = checkSurroundings(x,y);
-  for (let i = 0; i < surroundings.length; i++) {
-    const disc1 = surroundings[i];
-    if (disc1.color !== discColor()) {
-    //push into array, check surrounding. first function checks inital click second function checks 1 relation point on
-    opposingDiscs.push(disc1);
-    }
-  }
-  return opposingDiscs;
+    switch (board[i][x]) {
 
-} //returns array of Opposing discs
+      case opposition():
+        opposingDiscs.push(
+          {
+            x: x,
+            y: i
+          }
+        )
+        break;
 
-function findRelationship(x,y,x2,y2){
-    let xDiff = x - x2;
-    let yDiff = y - y2;
-  }
-  return {x: xDiff, y: yDiff};
-} //finds x,y relationship between opposing disc and origin
-
-function checkSurroundings(x,y){ //checks all 8 sides of surroundings from origin
-  const surroundingObjects = [];
-    for (let xP = -1; xP < 2 ; xP++) {
-      for (let yP = 1; yP > -2 ; yP--) {
-
-          if ( !(xP === 0 && yP === 0) ) {
-            if ( !(board[x - xP][y - yP] === 'x') ) {
-
-            surroundingObjects.push(
-                {
-                color: `${checkColor(board[x - xP][y - yP])}`,
-                x: `${x - xP}`,
-                y: `${y - yP}`
-                  }
-                );
-            }
+      case turn:
+        if (opposingDiscs.length === 0) {
+          return false;
+        } else {
+          board[y][x] = turn;
+          //flip discs
+          for (let w = 0; w < opposingDiscs.length; w++) {
+            let disc = opposingDiscs[w];
+            board[disc.y][disc.x] = turn;
           }
         }
-      }
-  console.log(surroundingObjects);
-  return surroundingObjects;
+        break;
+
+        default:
+        break;
+    }
+
+    i += 1;
+  }
 }
 
-function checkNextDiscInPath(x,y,x2,y2){
-  if ( !(board[x-x2][y-y2] === 'x') ) {
-    const disc = {
-      color: `${checkColor(board[x-x2][y-y2])}`,
-      x: `${x-x2}`,
-      y = `${y-y2}`
-    };
-    return disc;
+function checkUp(x,y){
+  let opposingDiscs = [];
+  let i = y - 1;
+  while (i >= 0) {
+
+    switch (board[i][x]) {
+
+      case opposition():
+        opposingDiscs.push(
+          {
+            x: x,
+            y: i
+          }
+        )
+        break;
+
+      case turn:
+        if (opposingDiscs.length === 0) {
+          return false;
+        } else {
+          board[y][x] = turn;
+          //flip discs
+          for (let w = 0; w < opposingDiscs.length; w++) {
+            let disc = opposingDiscs[w];
+            board[disc.y][disc.x] = turn;
+          }
+        }
+        break;
+
+        default:
+        break;
+    }
+
+    i -= 1;
   }
 }
