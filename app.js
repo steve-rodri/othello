@@ -23,6 +23,7 @@ let turn = 0;
 function startGame(){
   createSpaces();
   newGameDiscs();
+  createTurnDiv();
   updateBoardEl();
   document.addEventListener('click', updateChoice);
 }
@@ -41,8 +42,8 @@ function updateChoice(e){
 
   if (changesToBoard()) {
     switchTurn();
+    changeColor();
   };
-  console.log(turn);
 }
 
 function changesToBoard(){
@@ -139,12 +140,43 @@ function newGameDiscs(){
 
 function switchTurn(){
   switch (turn) {
-    case 1: turn = 0;
+    case 1:
+    turn = 0;
       break;
-    case 0: turn = 1;
+    case 0:
+    turn = 1;
       break;
     default:
   }
+}
+
+function turnColor(){
+  switch (turn) {
+    case 0: return "Black";
+      break;
+    case 1: return "White";
+    default:
+
+  }
+}
+
+function changeColor(){
+  let turn = document.querySelector('.turn');
+  let turnColor = document.querySelector('#turncolor');
+  turn.style.color = `${turnColor()}`;
+  turnColor.innerHTML = `${turnColor()}`;
+}
+
+function createTurnDiv(){
+  const aside = document.querySelector("aside");
+  let turnDiv = document.createElement('div');
+  turnDiv.className = "turn";
+  turnDiv.style.color = `${turnColor()}`;
+  turnDiv.innerHTML = `
+  <h2>Turn</h2>
+  <h3 id="turncolor"></h3>
+  `
+  aside.appendChild(turnDiv);
 }
 
 function opposition(){

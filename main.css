@@ -30,6 +30,24 @@ h1 {
   font-family: sans-serif;
 }
 
+.turn {
+  margin: 100px 0;
+  height: 200px
+  width: 400px;
+}
+h2 {
+  color: white;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 40px;
+  font-family: sans-serif;
+}
+h3 {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 50px;
+  font-family: sans-serif
+}
 
 #board {
   background-image: url("./images/green-felt.jpg");
