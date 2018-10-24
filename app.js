@@ -484,7 +484,7 @@ function checkDiagonalForwardSlashDown(x,y){
   let opposingDiscs = [];
   let x2 = x + 1;
   let y2 = y + 1;
-  while (x2 >= 0 && y2 >= 0) {
+  while (x2 < board.length - 1 && y2 < board.length -1) {
 
     switch (board[y2][x2]) {
 
