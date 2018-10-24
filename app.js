@@ -117,38 +117,13 @@ function opposition(){
 }
 
 function checkDisc(x,y){
-  // const surroundings = checkSurroundings(x,y);
 
   if (board[y][x] !== 'x') {
     return false;
-  } else if ( checkVertically(x,y) || checkHorizontally(x,y) ){
+  } else if ( checkVertically(x,y) || checkHorizontally(x,y) || checkDiagonallyBackSlash(x,y) || checkDiagonallyForwardSlash(x,y) ){
       updateBoardEl();
       switchTurn();
   }
-}
-
-function checkSurroundings(x,y){
-  const surroundingObjects = [];
-
-  for (let y2 = 1; y2 >= -1 ; y2 -= 1) {
-    for (let x2 = -1; x2 <= 1 ; x2 += 1) {
-
-        if ( !(x - x2 < 0 || y - y2 < 0 || x - x2 > 7 || y - y2 > 7) ) {
-          if ( !(y2 === 0 && x2 === 0) ) {
-            if ( !(board[y - y2][x - x2] === 'x') ) {
-
-              surroundingObjects.push(
-                  {
-                  x: `${x - x2}`,
-                  y: `${y - y2}`
-                    }
-                  );
-            }
-          }
-        }
-      }
-    }
-  return surroundingObjects;
 }
 
 function checkVertically (x,y){
@@ -203,7 +178,7 @@ function checkUp(x,y){
   while (i >= 0) {
 
     switch (board[i][x]) {
-      
+
       case "x":
         return false;
         break;
@@ -295,6 +270,7 @@ function checkRight(x,y){
       case "x":
         return false;
         break;
+
       case opposition():
         opposingDiscs.push(
           {
@@ -327,12 +303,187 @@ function checkRight(x,y){
 }
 
 function checkDiagonallyBackSlash(x,y){
-
+  return checkDiagonalBackSlashUp(x,y) || checkDiagonalBackSlashDown(x,y);
 }
 
 function checkDiagonalBackSlashUp(x,y){
+  let opposingDiscs = [];
+  let x2 = x + 1;
+  let y2 = y - 1;
+  while (x2 < board.length - 1 && y2 >= 0) {
 
+    switch (board[y2][x2]) {
+
+      case "x":
+        return false;
+        break;
+
+      case opposition():
+        opposingDiscs.push(
+          {
+            x: x2,
+            y: y2
+          }
+        )
+        break;
+
+      case turn:
+        if (opposingDiscs.length === 0) {
+          return false;
+        } else {
+          board[y][x] = turn;
+          //flip discs
+          for (let w = 0; w < opposingDiscs.length; w++) {
+            let disc = opposingDiscs[w];
+            board[disc.y][disc.x] = turn;
+          }
+          return true;
+        }
+        break;
+
+        default:
+        break;
+    }
+
+    x2 += 1;
+    y2 -= 1;
+  }
 }
 
+function checkDiagonalBackSlashDown(x,y){
+  let opposingDiscs = [];
+  let x2 = x - 1;
+  let y2 = y + 1;
+  while (x2 >= 0 && y2 < board.length - 1) {
+
+    switch (board[y2][x2]) {
+
+      case "x":
+        return false;
+        break;
+
+      case opposition():
+        opposingDiscs.push(
+          {
+            x: x2,
+            y: y2
+          }
+        )
+        break;
+
+      case turn:
+        if (opposingDiscs.length === 0) {
+          return false;
+        } else {
+          board[y][x] = turn;
+          //flip discs
+          for (let w = 0; w < opposingDiscs.length; w++) {
+            let disc = opposingDiscs[w];
+            board[disc.y][disc.x] = turn;
+          }
+          return true;
+        }
+        break;
+
+        default:
+        break;
+    }
+
+    x2 -= 1;
+    y2 += 1;
+  }
+}
+
+function checkDiagonallyForwardSlash(x,y){
+  return checkDiagonalForwardSlashUp(x,y) || checkDiagonalForwardSlashDown(x,y);
+}
+
+function checkDiagonalForwardSlashUp(x,y){
+  let opposingDiscs = [];
+  let x2 = x - 1;
+  let y2 = y - 1;
+  while (x2 >= 0 && y2 >= 0) {
+
+    switch (board[y2][x2]) {
+
+      case "x":
+        return false;
+        break;
+
+      case opposition():
+        opposingDiscs.push(
+          {
+            x: x2,
+            y: y2
+          }
+        )
+        break;
+
+      case turn:
+        if (opposingDiscs.length === 0) {
+          return false;
+        } else {
+          board[y][x] = turn;
+          //flip discs
+          for (let w = 0; w < opposingDiscs.length; w++) {
+            let disc = opposingDiscs[w];
+            board[disc.y][disc.x] = turn;
+          }
+          return true;
+        }
+        break;
+
+        default:
+        break;
+    }
+
+    x2 -= 1;
+    y2 -= 1;
+  }
+}
+
+function checkDiagonalForwardSlashDown(x,y){
+  let opposingDiscs = [];
+  let x2 = x + 1;
+  let y2 = y + 1;
+  while (x2 >= 0 && y2 >= 0) {
+
+    switch (board[y2][x2]) {
+
+      case "x":
+        return false;
+        break;
+
+      case opposition():
+        opposingDiscs.push(
+          {
+            x: x2,
+            y: y2
+          }
+        )
+        break;
+
+      case turn:
+        if (opposingDiscs.length === 0) {
+          return false;
+        } else {
+          board[y][x] = turn;
+          //flip discs
+          for (let w = 0; w < opposingDiscs.length; w++) {
+            let disc = opposingDiscs[w];
+            board[disc.y][disc.x] = turn;
+          }
+          return true;
+        }
+        break;
+
+        default:
+        break;
+    }
+
+    x2 += 1;
+    y2 += 1;
+  }
+}
 
 startGame();
