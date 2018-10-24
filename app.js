@@ -117,13 +117,14 @@ function opposition(){
 }
 
 function checkDisc(x,y){
-  checkVertically(x,y);
+  if (checkVertically(x,y) || checkHorizontally(x,y) ) {
+    switchTurn();
+  }
   updateBoardEl();
 }
 
 function checkVertically (x,y) {
-  checkUp(x,y);
-  checkDown(x,y);
+  return checkUp(x,y) || checkDown(x,y);
 }
 
 function checkDown(x,y){
@@ -152,7 +153,7 @@ function checkDown(x,y){
             let disc = opposingDiscs[w];
             board[disc.y][disc.x] = turn;
           }
-          switchTurn();
+          return true;
         }
         break;
 
@@ -190,7 +191,7 @@ function checkUp(x,y){
             let disc = opposingDiscs[w];
             board[disc.y][disc.x] = turn;
           }
-          switchTurn();
+          return true;
         }
         break;
 
@@ -199,5 +200,85 @@ function checkUp(x,y){
     }
 
     i -= 1;
+  }
+}
+
+function checkHorizontally(x,y){
+  return checkLeft(x,y) || checkRight(x,y);
+}
+
+function checkLeft(x,y){
+  let opposingDiscs = [];
+  let i = x - 1;
+  while (i >= 0) {
+
+    switch (board[y][i]) {
+
+      case opposition():
+        opposingDiscs.push(
+          {
+            x: i,
+            y: y
+          }
+        )
+        break;
+
+      case turn:
+        if (opposingDiscs.length === 0) {
+          return false;
+        } else {
+          board[y][x] = turn;
+          //flip discs
+          for (let w = 0; w < opposingDiscs.length; w++) {
+            let disc = opposingDiscs[w];
+            board[disc.y][disc.x] = turn;
+          }
+          return true;
+        }
+        break;
+
+        default:
+        break;
+    }
+
+    i -= 1;
+  }
+}
+
+function checkRight(x,y){
+  let opposingDiscs = [];
+  let i = x + 1;
+  while (i < board.length - 1) {
+
+    switch (board[y][i]) {
+
+      case opposition():
+        opposingDiscs.push(
+          {
+            x: i,
+            y: y
+          }
+        )
+        break;
+
+      case turn:
+        if (opposingDiscs.length === 0) {
+          return false;
+        } else {
+          board[y][x] = turn;
+          //flip discs
+          for (let w = 0; w < opposingDiscs.length; w++) {
+            let disc = opposingDiscs[w];
+            board[disc.y][disc.x] = turn;
+          }
+          return true;
+        }
+        break;
+
+        default:
+        break;
+    }
+
+    i += 1;
   }
 }
