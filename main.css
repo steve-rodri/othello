@@ -30,19 +30,20 @@ h1 {
   font-family: sans-serif;
 }
 
-.turn {
+.turnBox {
   margin: 100px 0;
   height: 200px
   width: 400px;
 }
-h2 {
+
+#turnTitle {
   color: white;
   text-align: center;
   margin: 20px 0;
   font-size: 40px;
   font-family: sans-serif;
 }
-h3 {
+#turnColor {
   text-align: center;
   margin: 20px 0;
   font-size: 50px;
@@ -52,8 +53,8 @@ h3 {
 #board {
   background-image: url("./images/green-felt.jpg");
   background-size: cover;
-  border: 15px solid rgba(0, 0, 0, 0.8);
-  border-radius: 3px;
+  border: 15px solid rgba(0, 0, 0, 0.9);
+  border-radius: 8px;
   margin: auto;
   display: flex;
   flex-wrap: wrap;
@@ -82,4 +83,5 @@ h3 {
   border-radius: 100%;
   margin: auto;
   z-index: 1;
+  border-bottom: 4px solid rgba(0, 0, 0, 0.2);
 }

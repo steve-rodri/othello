@@ -21,6 +21,7 @@ const boardChanges = [
 let turn = 0;
 
 function startGame(){
+  // createStartPanel();
   createSpaces();
   newGameDiscs();
   createTurnDiv();
@@ -40,10 +41,20 @@ function updateChoice(e){
 
   checkDisc(choice.x, choice.y);
 
-  if (changesToBoard()) {
+
+  if (changesToBoard() || playerCannotMove()) {
     switchTurn();
     changeColor();
-  };
+  }
+  // } else if (!changesToBoard() && playerCannotMove()) {
+  //   switchTurn();
+  //   changeColor();
+  //   if (playerCannotMove()) {
+  //     const piecesOnBoard = countPieces();
+  //     console.log(`${piecesOnBoard.white} white pieces`);
+  //     console.log(`${piecesOnBoard.black} black pieces`);
+  //   }
+  // }
 }
 
 function changesToBoard(){
@@ -66,6 +77,28 @@ function boardChangesUpdate(){
     for (let x = 0; x < board.length; x++) {
       boardChanges[y][x] = board[y][x];
     }
+  }
+}
+
+function countPieces(){
+  let countBlack = 0;
+  let countWhite = 0;
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board.length; x++) {
+      switch (board[y][x]) {
+        case 0:
+          countBlack += 1;
+          break;
+        case 1:
+          countWhite += 1;
+          break;
+        default:
+      }
+    }
+  }
+  return {
+    black: countBlack,
+    white: countWhite
   }
 }
 
@@ -118,6 +151,38 @@ function updateBoardEl(){
   }
 }
 
+function createStartPanel(){
+  const aside = document.querySelector('aside');
+  aside.innerHTML = `
+  <div class = "details">
+    <h1>Othello</h1>
+
+    <h4>Description</h4>
+
+    <h5>2-Player</h5>
+
+    <p>Othello (or Reversi) is a strategy board game for two players, played on an 8×8 uncheckered board. There are sixty-four identical game pieces called discs, which are light on one side and dark on the other. Players take turns placing disks on the board with their assigned color facing up.</p>
+
+    <h4>Objective</h4>
+
+    <p>The player with the most pieces of their kind on the board after all valid moves have been completed wins the game. In order to achieve this, players can take over other pieces by outflanking them.</p>
+
+    <h4>Rules</h4>
+      <ul>
+        <li>Black always moves first.</li>
+        <li>If on your turn you can not outflank and flip at least one opposing disc, your turn is forfeited and your opponent moves again. However if a move is available to you, you may not forfeit your turn.</li>
+        <li>A disc may outflank any number of discs in one or more rows in any number of directions at the same time - horizontally vertically or diagonally</li>
+        <li>You may not skip over your own color disc to outflank an opposing disc.</li>
+        <li>Discs may only be outflanked as a direct result of a move and must fall in the direct line of the disc placed down.</li>
+        <li>All discs outflanked in any one move must be flipped, even if it is to the player's advantage not to flip them at all.</li>
+        <li>Once a disc is placed on a square, it can never be moved to another square later in the game.</li>
+        <li>When it is no longer possible for either player to move, the game is over. Discs are counted and the player with the majority of his or her color discs on the board is the winner.</li>
+      </ul>
+    </div>
+  <button id="start"></button>
+  `
+}
+
 function createSpaces(){
   const boardEl = document.querySelector("#board");
   for (let y = 0; y < 8; y++) {
@@ -161,22 +226,29 @@ function turnColor(){
 }
 
 function changeColor(){
-  let turn = document.querySelector('.turn');
-  let turnColor = document.querySelector('#turncolor');
+  const turn = document.querySelector('#turnColor');
+  turn.innerText = `${turnColor()}`;
   turn.style.color = `${turnColor()}`;
-  turnColor.innerHTML = `${turnColor()}`;
+
 }
 
 function createTurnDiv(){
-  const aside = document.querySelector("aside");
-  let turnDiv = document.createElement('div');
-  turnDiv.className = "turn";
-  turnDiv.style.color = `${turnColor()}`;
-  turnDiv.innerHTML = `
-  <h2>Turn</h2>
-  <h3 id="turncolor"></h3>
-  `
+  const aside = document.querySelector('aside');
+  const turnDiv = document.createElement('div');
+  const title = document.createElement('h2');
+  const turn = document.createElement('h3');
+  turnDiv.className = 'turnBox';
+  title.id = 'turnTitle';
+  turn.id = 'turnColor';
+
+  title.innerText = "Turn";
+  turn.innerText = `${turnColor()}`;
+
+  turnDiv.appendChild(title);
+  turnDiv.appendChild(turn);
   aside.appendChild(turnDiv);
+
+
 }
 
 function opposition(){
