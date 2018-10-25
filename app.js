@@ -42,7 +42,7 @@ function updateChoice(e){
   checkDisc(choice.x, choice.y);
 
 
-  if (changesToBoard() || playerCannotMove()) {
+  if (changesToBoard()) {
     switchTurn();
     changeColor();
   }
