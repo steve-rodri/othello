@@ -56,3 +56,43 @@ The player with the most pieces of their kind on the board after all valid moves
 finished MVP
 
 ![alt text](./images/Othello.png)
+
+snippet of loop inception
+
+```javascript
+
+function canMakeMove(){
+
+  const possibleMoves = [];
+  for (let y = 0; y < board.length; y++) {//loop through board
+    for (let x = 0; x < board.length; x++) {
+      if (board [y][x] === 'x') { // if board space is empty
+
+        //find all opposing discs with player disc at end - returns multi
+        const opposingDiscs = checkDisc(x, y); // returns multi-dimensional array
+        for (let a = 0; a < opposingDiscs.length; a++) {
+          let layer1 = opposingDiscs[a];
+          for (let b = 0; b < layer1.length; b++) {
+            let layer2 = opposingDiscs[a][b];
+
+              if (layer2.length !== 0) {
+                possibleMoves.push(
+                    {
+                      x: x,
+                      y: y
+                    }
+                  );
+                }
+              }
+            }
+          }
+        }
+      }
+    if (possibleMoves.length !== 0) {
+      return true;
+    } else {
+      return false;
+    }
+}
+
+```

@@ -115,7 +115,8 @@ function canMakeMove(){
     for (let x = 0; x < board.length; x++) {
       if (board [y][x] === 'x') { // if board space is empty
 
-        const opposingDiscs = checkDisc(x, y); //find all opposing discs with player disc at end
+        //find all opposing discs with player disc at end - returns multi
+        const opposingDiscs = checkDisc(x, y); // returns multi-dimensional array
         for (let a = 0; a < opposingDiscs.length; a++) {
           let layer1 = opposingDiscs[a];
           for (let b = 0; b < layer1.length; b++) {
