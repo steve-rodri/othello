@@ -20,14 +20,21 @@ let boardChanges = [
 ]
 let turn = 0;
 
-function startGame(){
-  // createStartPanel();
+
+
+function runGame(){
+  createStartPanel();
   createSpaces();
-  newGameDiscs();
-  createTurnDiv();
   updateBoardEl();
-  document.addEventListener('click', updateChoice);
 }
+
+function startGame(){
+  newGameDiscs();
+  updateBoardEl();
+  createTurnDiv();
+  document.addEventListener('click', updateChoice)
+}
+
 
 function updateChoice(e){
   //set choice to dataset values of clicked element
@@ -259,34 +266,76 @@ function updateBoardEl(){
 }
 
 function createStartPanel(){
-  const aside = document.querySelector('aside');
+  const body = document.body;
+  const aside = document.createElement('aside');
   aside.innerHTML = `
+
+  <h1>Othello</h1>
+
+  <nav>
+    <ul>
+      <li><a id="descriptionLink" href="#">Description</a></li>
+      <li><a id= "rulesLink" href="#">Rules</a></li>
+    </ul>
+  </nav>
+
   <div class = "details">
-    <h1>Othello</h1>
-
-    <h4>Description</h4>
-
-    <h5>2-Player</h5>
-
-    <p>Othello (or Reversi) is a strategy board game for two players, played on an 8×8 uncheckered board. There are sixty-four identical game pieces called discs, which are light on one side and dark on the other. Players take turns placing disks on the board with their assigned color facing up.</p>
-
-    <h4>Objective</h4>
-
-    <p>The player with the most pieces of their kind on the board after all valid moves have been completed wins the game. In order to achieve this, players can take over other pieces by outflanking them.</p>
-
-    <h4>Rules</h4>
-      <ul>
-        <li>Black always moves first.</li>
-        <li>If on your turn you can not outflank and flip at least one opposing disc, your turn is forfeited and your opponent moves again. However if a move is available to you, you may not forfeit your turn.</li>
-        <li>A disc may outflank any number of discs in one or more rows in any number of directions at the same time - horizontally vertically or diagonally</li>
-        <li>You may not skip over your own color disc to outflank an opposing disc.</li>
-        <li>Discs may only be outflanked as a direct result of a move and must fall in the direct line of the disc placed down.</li>
-        <li>All discs outflanked in any one move must be flipped, even if it is to the player's advantage not to flip them at all.</li>
-        <li>Once a disc is placed on a square, it can never be moved to another square later in the game.</li>
-        <li>When it is no longer possible for either player to move, the game is over. Discs are counted and the player with the majority of his or her color discs on the board is the winner.</li>
-      </ul>
+    <div>
+      <p>Othello (or Reversi) is a strategy board game for two players, played on an 8×8 uncheckered board. There are sixty-four identical game pieces called discs, which are light on one side and dark on the other. Players take turns placing disks on the board with their assigned color facing up.</p>
     </div>
-  <button id="start"></button>
+    <div>
+      <h4>Objective</h4>
+
+      <p>The player with the most pieces of their kind on the board after all valid moves have been completed wins the game. In order to achieve this, players can take over other pieces by outflanking them.</p>
+    </div>
+  </div>
+
+  <button id="start">Start Game!</button>
+  `;
+
+  body.insertBefore(aside, body.firstChild);
+}
+
+function removeStartPanelContents(){
+  const aside = document.querySelector('aside');
+  while (aside.firstChild) {
+    aside.removeChild(aside.firstChild);
+  }
+
+}
+
+function minimizeStartPanel(){
+  const aside = document.querySelector('aside');
+  aside.style.width = "0%";
+}
+
+function displayDescription(){
+  const details = document.querySelector('.details');
+  details.innerHTML = `
+  <h5>2-Player-Game</h5>
+
+  <p>Othello (or Reversi) is a strategy board game for two players, played on an 8×8 uncheckered board. There are sixty-four identical game pieces called discs, which are light on one side and dark on the other. Players take turns placing disks on the board with their assigned color facing up.</p>
+
+  <h4>Objective</h4>
+
+  <p>The player with the most pieces of their kind on the board after all valid moves have been completed wins the game. In order to achieve this, players can take over other pieces by outflanking them.</p>
+  `
+}
+
+function displayRules(){
+  const details = document.querySelector('.details');
+  details.innerHTML = `
+  <h4>Rules</h4>
+    <ul>
+      <li>Black always moves first.</li>
+      <li>If on your turn you can not outflank and flip at least one opposing disc, your turn is forfeited and your opponent moves again. However if a move is available to you, you may not forfeit your turn.</li>
+      <li>A disc may outflank any number of discs in one or more rows in any number of directions at the same time - horizontally vertically or diagonally</li>
+      <li>You may not skip over your own color disc to outflank an opposing disc.</li>
+      <li>Discs may only be outflanked as a direct result of a move and must fall in the direct line of the disc placed down.</li>
+      <li>All discs outflanked in any one move must be flipped, even if it is to the player's advantage not to flip them at all.</li>
+      <li>Once a disc is placed on a square, it can never be moved to another square later in the game.</li>
+      <li>When it is no longer possible for either player to move, the game is over. Discs are counted and the player with the majority of his or her color discs on the board is the winner.</li>
+    </ul>
   `
 }
 
@@ -691,4 +740,4 @@ function checkDiagonalForwardSlashDown(x,y){
   }
 }
 
-startGame();
+runGame();
