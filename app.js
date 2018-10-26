@@ -20,8 +20,6 @@ let boardChanges = [
 ]
 let turn = 0;
 
-
-
 function runGame(){
   createStartPanel();
   createSpaces();
@@ -31,10 +29,11 @@ function runGame(){
 function startGame(){
   newGameDiscs();
   updateBoardEl();
+  removeStartPanelContents();
+  minimizeStartPanel();
   createTurnDiv();
-  document.addEventListener('click', updateChoice)
+  addSpaceListeners();
 }
-
 
 function updateChoice(e){
   //set choice to dataset values of clicked element
@@ -59,6 +58,39 @@ function updateChoice(e){
   }
 }
 
+function addSpaceListeners(){
+  const spaces = document.querySelectorAll('.space');
+  for (var i = 0; i < spaces.length; i++) {
+    const space = spaces[i];
+    space.addEventListener('click', updateChoice);
+  }
+}
+
+function addStartButtonListener(){
+  const startButton = document.querySelector('#startButton');
+  startButton.addEventListener('click', startGame);
+}
+
+function addDescriptionListener(){
+  const description = document.querySelector('#descriptionLink');
+  description.addEventListener('click', displayDescription);
+}
+
+function removeDescriptionListener(){
+  const description = document.querySelector('#descriptionLink');
+  description.removeEventListener('click', displayDescription);
+}
+
+function addRulesListener(){
+  const rules = document.querySelector('#rulesLink');
+  rules.addEventListener('click', displayRules);
+}
+
+function removeRulesListener(){
+  const rules = document.querySelector('#rulesLink');
+  rules.removeEventListener('click', displayRules);
+}
+
 function winner(){
   const piecesOnBoard = countPieces();
   const blackPieces = piecesOnBoard.black;
@@ -74,13 +106,13 @@ function winner(){
 }
 
 function displayGameOverMessage(){
-  const aside = document.querySelector('aside');
+  const body = document.querySelector('body');
   const board = document.querySelector('#board');
   const gameOverBox = document.createElement('div');
-  const gameOverCondition = document.createElement('h3');
+  // const gameOverCondition = document.createElement('h3');
   const gameWinner = document.createElement('h1');
   const gameOverScoreBoard = document.createElement('div');
-  const gameOverScoreTitle = document.createElement('h3');
+  // const gameOverScoreTitle = document.createElement('h3');
   const gameOverScoreBlack = document.createElement('h2');
   const gameOverScoreWhite = document.createElement('h2');
 
@@ -89,30 +121,29 @@ function displayGameOverMessage(){
   gameOverScoreBoard.className = "scoreboard";
   gameOverScoreBlack.id = "scoreBlack";
   gameOverScoreWhite.id = "scoreWhite";
-  debugger;
-  gameOverCondition.innerHTML = 'neither player can make a move';
+  // gameOverCondition.innerHTML = 'Neither player can make a move';
   gameWinner.innerHTML = `${winner()}`;
 
   const piecesOnBoard = countPieces();
   const blackPieces = piecesOnBoard.black;
   const whitePieces = piecesOnBoard.white;
 
-  gameOverScoreTitle.innerText = "Score";
+  // gameOverScoreTitle.innerText = "Score";
   gameOverScoreBlack.innerHTML = `Black - ${blackPieces}`;
   gameOverScoreWhite.innerHTML = `White - ${whitePieces}`;
 
-  gameOverScoreBoard.appendChild(gameOverScoreTitle);
+  // gameOverScoreBoard.appendChild(gameOverScoreTitle);
   gameOverScoreBoard.appendChild(gameOverScoreBlack);
   gameOverScoreBoard.appendChild(gameOverScoreWhite);
   gameOverBox.appendChild(gameOverScoreBoard);
-  gameOverBox.appendChild(gameOverCondition);
+  // gameOverBox.appendChild(gameOverCondition);
   gameOverBox.appendChild(gameWinner);
   gameOverBox.appendChild(gameOverScoreBoard);
 
 
-  const turnBox = aside.firstElementChild;
-  aside.removeChild(turnBox);
-  aside.appendChild(gameOverBox);
+  const turnBox = document.querySelector('.turnBox');
+  body.removeChild(turnBox);
+  body.appendChild(gameOverBox);
 }
 
 function canMakeMove(){
@@ -273,27 +304,15 @@ function createStartPanel(){
   <h1>Othello</h1>
 
   <nav>
-    <ul>
-      <li><a id="descriptionLink" href="#">Description</a></li>
-      <li><a id= "rulesLink" href="#">Rules</a></li>
-    </ul>
+    <a id="descriptionLink" href="#">Description</a>
+    <a id= "rulesLink" href="#">Rules</a>
   </nav>
 
   <div class = "details">
-    <div>
-      <p>Othello (or Reversi) is a strategy board game for two players, played on an 8×8 uncheckered board. There are sixty-four identical game pieces called discs, which are light on one side and dark on the other. Players take turns placing disks on the board with their assigned color facing up.</p>
-    </div>
-    <div>
-      <h4>Objective</h4>
-
-      <p>The player with the most pieces of their kind on the board after all valid moves have been completed wins the game. In order to achieve this, players can take over other pieces by outflanking them.</p>
-    </div>
   </div>
-
-  <button id="start">Start Game!</button>
   `;
-
   body.insertBefore(aside, body.firstChild);
+  displayDescription();
 }
 
 function removeStartPanelContents(){
@@ -312,20 +331,24 @@ function minimizeStartPanel(){
 function displayDescription(){
   const details = document.querySelector('.details');
   details.innerHTML = `
-  <h5>2-Player-Game</h5>
+  <div>
+    <p> <strong>Othello</strong> (<span>or Reversi</span>) is a strategy board game for two players, played on an 8×8 uncheckered board. There are sixty-four identical game pieces called discs, which are light on one side and dark on the other. Players take turns placing disks on the board with their assigned color facing up.</p>
+  </div>
+  <div>
+    <h4>Objective</h4>
 
-  <p>Othello (or Reversi) is a strategy board game for two players, played on an 8×8 uncheckered board. There are sixty-four identical game pieces called discs, which are light on one side and dark on the other. Players take turns placing disks on the board with their assigned color facing up.</p>
-
-  <h4>Objective</h4>
-
-  <p>The player with the most pieces of their kind on the board after all valid moves have been completed wins the game. In order to achieve this, players can take over other pieces by outflanking them.</p>
-  `
+    <p>The player with the most pieces of their kind on the board after all valid moves have been completed wins the game. In order to achieve this, players can take over other pieces by <span>"outflanking"</span> them.</p>
+  </div>
+  `;
+  removeDescriptionListener();
+  addRulesListener();
+  displayStartButton();
+  addStartButtonListener();
 }
 
 function displayRules(){
   const details = document.querySelector('.details');
   details.innerHTML = `
-  <h4>Rules</h4>
     <ul>
       <li>Black always moves first.</li>
       <li>If on your turn you can not outflank and flip at least one opposing disc, your turn is forfeited and your opponent moves again. However if a move is available to you, you may not forfeit your turn.</li>
@@ -337,6 +360,27 @@ function displayRules(){
       <li>When it is no longer possible for either player to move, the game is over. Discs are counted and the player with the majority of his or her color discs on the board is the winner.</li>
     </ul>
   `
+  removeRulesListener();
+  addDescriptionListener();
+  removeStartButton();
+}
+
+function displayStartButton(){
+  const startPanel = document.querySelector('aside');
+  const start = document.createElement('div');
+  const startButton = document.createElement('button');
+  start.className = "start"
+  startButton.id = "startButton";
+  startButton.innerHTML = "Start Game!";
+  start.appendChild(startButton);
+  startPanel.appendChild(start);
+}
+
+function removeStartButton(){
+  const start = document.querySelector('.start');
+  const startPanel = document.querySelector('aside');
+
+  startPanel.removeChild(start);
 }
 
 function createSpaces(){
@@ -350,6 +394,32 @@ function createSpaces(){
       boardEl.appendChild(newSpace);
     }
   }
+}
+
+function createTurnDiv(){
+  const body = document.body;
+  const turnDiv = document.createElement('div');
+  // const title = document.createElement('h2');
+  const turn = document.createElement('h3');
+  turnDiv.className = 'turnBox';
+  // title.id = 'turnTitle';
+  turn.id = 'turnColor';
+
+  // title.innerText = "Turn:";
+  turn.innerText = `${turnColor()}`;
+
+  // turnDiv.appendChild(title);
+  turnDiv.appendChild(turn);
+  body.appendChild(turnDiv);
+
+
+}
+
+function changeColor(){
+  const turn = document.querySelector('#turnColor');
+  turn.innerText = `${turnColor()}`;
+  turn.style.color = `${turnColor()}`;
+
 }
 
 function newGameDiscs(){
@@ -380,32 +450,6 @@ function turnColor(){
     default:
 
   }
-}
-
-function changeColor(){
-  const turn = document.querySelector('#turnColor');
-  turn.innerText = `${turnColor()}`;
-  turn.style.color = `${turnColor()}`;
-
-}
-
-function createTurnDiv(){
-  const aside = document.querySelector('aside');
-  const turnDiv = document.createElement('div');
-  const title = document.createElement('h2');
-  const turn = document.createElement('h3');
-  turnDiv.className = 'turnBox';
-  title.id = 'turnTitle';
-  turn.id = 'turnColor';
-
-  title.innerText = "Turn:";
-  turn.innerText = `${turnColor()}`;
-
-  turnDiv.appendChild(title);
-  turnDiv.appendChild(turn);
-  aside.appendChild(turnDiv);
-
-
 }
 
 function opposition(){

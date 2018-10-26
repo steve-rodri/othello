@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-html{
+html {
   height: 100%;
 }
 
@@ -13,6 +13,7 @@ body {
   background-image: url("./images/wood-background.jpg");
   background-size: cover;
   display: flex;
+  z-index: -2;
 }
 
 aside {
@@ -22,33 +23,26 @@ aside {
   background: rgba(15, 15, 15, .8);
   width: 33%;
   border-right: 2px solid rgba(0, 0, 0, 0.5);
-  z-index: -1;
 }
 
 nav {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   background-color: rgba(50,50,50, .7);
   height: 40px;
 }
 
-
-li {
-  display: inline;
-}
-
 a {
   text-decoration: none;
-  padding: 25px 50px;
   color: white;
   font-size: 20px;
   font-family: sans-serif;
-
 }
 
 a:hover {
   cursor: pointer;
+  text-decoration: underline;
 }
 
 .details {
@@ -66,10 +60,46 @@ h1 {
   font-family: sans-serif;
 }
 
-#start {
-  position: relative;
-  top: 33%;
-  left: 25%;
+p {
+  padding: 0 20px;
+  font-size: 20px;
+  line-height: 25px;
+  color: rgba(255, 255, 255,.8 );
+}
+
+li {
+  font-size: 19px;
+  color: rgba(255, 255, 255,.8 );
+  padding: 5px;
+}
+
+strong {
+  font-weight: bold;
+  color: white;
+}
+
+span {
+  font-style: italic;
+}
+
+h4 {
+  font-size: 24px;
+  padding: 40px 20px 20px 20px;
+
+
+}
+
+.start {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 100px auto 0 auto;
+  padding: 0 0 50px 0;
+  align-self: flex-end;
+}
+
+#startButton {
   width: 200px;
   height: 60px;
   font-size: 25px;
@@ -79,30 +109,21 @@ h1 {
   border-radius: 5px;
 }
 
-#start:hover {
+#startButton:hover {
   cursor: pointer;
 }
 
-
-
 .turnBox {
-  margin: 100px 0;
-  height: 200px
-  width: 400px;
+  position:absolute;
+  top:  33%;
+
 }
 
-#turnTitle {
-  color: white;
-  text-align: center;
-  margin: 20px 0;
-  font-size: 40px;
-  font-family: sans-serif;
-}
 #turnColor {
-  text-align: center;
-  margin: 20px 0;
-  font-size: 50px;
-  font-family: sans-serif
+  margin: 50px 0;
+  font-size: 115px;
+  font-family: 'Permanent Marker', cursive;
+  transform: rotateZ(-45deg);
 }
 
 #board {
@@ -141,9 +162,21 @@ h1 {
 }
 
 .gameOver {
-  margin: 50px 0;
+  position: absolute;
+  top: 33%;
+  z-index: 5;
+  background-color: rgba(255, 255, 255, 0.8);
+  width: 100%;
+  height: 33vh;
+  overflow: hidden;
   color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-size: 5vh;
+  color: black;
+}
+
+#gameWinner {
+  color: black;
 }
