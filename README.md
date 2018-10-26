@@ -57,7 +57,7 @@ finished MVP
 
 ![alt text](./images/Othello.png)
 
-snippet of loop inception
+snippet of loop inception (checking if a player can make a move)
 
 ```javascript
 
