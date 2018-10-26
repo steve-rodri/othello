@@ -50,3 +50,9 @@ The player with the most pieces of their kind on the board after all valid moves
 
 * Outflanking works
 * Game is playable.
+
+## Log
+
+finished MVP
+
+![alt text](./images/Othello.png)

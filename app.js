@@ -36,7 +36,6 @@ function updateChoice(e){
       x: parseInt( clickedSpace.dataset.x ),
       y: parseInt( clickedSpace.dataset.y )
     };
-    console.log(choice.x, choice.y);
   boardChangesUpdate();
 
   flipDiscs(choice.x, choice.y);
@@ -47,13 +46,66 @@ function updateChoice(e){
       console.log('opposing player cannot make move');
       switchTurn();
       if (!canMakeMove()) { //if player cannot make a second move, game is over.
-        console.log('neither player can make a move');
-        const piecesOnBoard = countPieces();
-        console.log(`${piecesOnBoard.white} white pieces`);
-        console.log(`${piecesOnBoard.black} black pieces`);
+        displayGameOverMessage();
       }
     }
   }
+}
+
+function winner(){
+  const piecesOnBoard = countPieces();
+  const blackPieces = piecesOnBoard.black;
+  const whitePieces = piecesOnBoard.white;
+
+  if (blackPieces > whitePieces) {
+    return "Black Wins!";
+  } else if (whitePieces > blackPieces) {
+    return "White Wins!";
+  } else if (blackPieces === whitePieces) {
+    return "Tie!";
+  }
+}
+
+function displayGameOverMessage(){
+  const aside = document.querySelector('aside');
+  const board = document.querySelector('#board');
+  const gameOverBox = document.createElement('div');
+  const gameOverCondition = document.createElement('h3');
+  const gameWinner = document.createElement('h1');
+  const gameOverScoreBoard = document.createElement('div');
+  const gameOverScoreTitle = document.createElement('h3');
+  const gameOverScoreBlack = document.createElement('h2');
+  const gameOverScoreWhite = document.createElement('h2');
+
+  gameOverBox.className = "gameOver";
+  gameWinner.id = "gameWinner";
+  gameOverScoreBoard.className = "scoreboard";
+  gameOverScoreBlack.id = "scoreBlack";
+  gameOverScoreWhite.id = "scoreWhite";
+  debugger;
+  gameOverCondition.innerHTML = 'neither player can make a move';
+  gameWinner.innerHTML = `${winner()}`;
+
+  const piecesOnBoard = countPieces();
+  const blackPieces = piecesOnBoard.black;
+  const whitePieces = piecesOnBoard.white;
+
+  gameOverScoreTitle.innerText = "Score";
+  gameOverScoreBlack.innerHTML = `Black - ${blackPieces}`;
+  gameOverScoreWhite.innerHTML = `White - ${whitePieces}`;
+
+  gameOverScoreBoard.appendChild(gameOverScoreTitle);
+  gameOverScoreBoard.appendChild(gameOverScoreBlack);
+  gameOverScoreBoard.appendChild(gameOverScoreWhite);
+  gameOverBox.appendChild(gameOverScoreBoard);
+  gameOverBox.appendChild(gameOverCondition);
+  gameOverBox.appendChild(gameWinner);
+  gameOverBox.appendChild(gameOverScoreBoard);
+
+
+  const turnBox = aside.firstElementChild;
+  aside.removeChild(turnBox);
+  aside.appendChild(gameOverBox);
 }
 
 function canMakeMove(){
@@ -177,6 +229,8 @@ function updateBoardEl(){
           newDisc.dataset.x = `${x}`;
           newDisc.dataset.y = `${y}`;
           newDisc.style.backgroundColor = "black";
+          newDisc.style.borderBottom = "4px solid rgba(255,255,255,.2)";
+          newDisc.style.borderRight = "3px solid rgba(255,255,255,.2)";
           for (var i = 0; i < spaces.length; i++) {
             if (spaces[i].dataset.x === `${x}` && spaces[i].dataset.y === `${y}`) {
               spaces[i].appendChild(newDisc);
@@ -190,6 +244,8 @@ function updateBoardEl(){
           newDisc.dataset.x = `${x}`;
           newDisc.dataset.y = `${y}`;
           newDisc.style.backgroundColor = "white";
+          newDisc.style.borderBottom = "4px solid rgba(0,0,0,.2)";
+          newDisc.style.borderRight = "3px solid rgba(0,0,0,.2)";
           for (let i = 0; i < spaces.length; i++) {
             if (spaces[i].dataset.x === `${x}` && spaces[i].dataset.y === `${y}`) {
               spaces[i].appendChild(newDisc);
@@ -292,7 +348,7 @@ function createTurnDiv(){
   title.id = 'turnTitle';
   turn.id = 'turnColor';
 
-  title.innerText = "Turn";
+  title.innerText = "Turn:";
   turn.innerText = `${turnColor()}`;
 
   turnDiv.appendChild(title);
