@@ -57,6 +57,8 @@ finished MVP
 
 ![alt text](./images/Othello.png)
 
+Used the Fisher-Yates Shuffle algorithm to randomize all possible moves.
+
 snippet of loop inception (checking if a player can make a move)
 
 ```javascript
@@ -96,3 +98,5 @@ function canMakeMove(){
 }
 
 ```
+
+[Website](http://othello-game.surge.sh/)

@@ -126,6 +126,25 @@ h4 {
   transform: rotateZ(-45deg);
 }
 
+#playerButton {
+  position:absolute;
+  left: 84%;
+  width: 200px;
+  height: 60px;
+  font-size: 25px;
+  background-color: rgba(0,255,75,.7);
+  color: white;
+  border: 2px solid rgba(0,255,75,.7);
+  border-radius: 5px;
+
+}
+
+#playerButton:hover {
+  cursor: pointer;
+}
+
+
+
 #board {
   background-image: url("./images/green-felt.jpg");
   background-size: cover;

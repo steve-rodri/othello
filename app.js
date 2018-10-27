@@ -19,6 +19,7 @@ let boardChanges = [
   ["x","x","x","x","x","x","x","x"]
 ]
 let turn = 0;
+let players = 1;
 
 function runGame(){
   createStartPanel();
@@ -33,6 +34,65 @@ function startGame(){
   minimizeStartPanel();
   createTurnDiv();
   addSpaceListeners();
+  addPlayerButton();
+}
+
+function newGame(){
+  removeGameOverMessage();
+  turn = 0;
+  board = [
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"]
+  ]
+  clearBoard();
+  newGameDiscs();
+  updateBoardEl()
+  createTurnDiv();
+}
+
+function onePlayer(){
+  players = 1;
+}
+function twoPlayer(){
+  players = 2;
+}
+
+function gameIs1Player(){
+  return players === 1;
+}
+
+function addPlayerButton(){
+  const body = document.querySelector('body');
+  const playerButton = document.createElement('button');
+  playerButton.id = "playerButton";
+  playerButton.innerHTML = "2 Players";
+  body.appendChild(playerButton);
+
+  playerButton.addEventListener('click', changeTo2Players);
+}
+
+function changeTo2Players(){
+  players = 2;
+  const playerButton = document.querySelector('#playerButton');
+  playerButton.innerHTML = "Play Computer";
+
+  playerButton.removeEventListener('click', changeTo2Players);
+  playerButton.addEventListener('click', changeTo1Player);
+}
+
+function changeTo1Player(){
+  players = 1;
+  const playerButton = document.querySelector('#playerButton');
+  playerButton.innerHTML = "2 Players";
+
+  playerButton.removeEventListener('click', changeTo1Player);
+  playerButton.addEventListener('click', changeTo2Players);
 }
 
 function updateChoice(e){
@@ -45,16 +105,83 @@ function updateChoice(e){
   boardChangesUpdate();
 
   flipDiscs(choice.x, choice.y);
+
+  mainLogic();
+
+}
+
+//Fisher-Yates Shuffle
+function shuffle(array) {
+  let currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+function CPUChoice(){
+  let possibleMovesArray = possibleMoves();
+  possibleMovesArray = shuffle(possibleMovesArray);
+  return possibleMovesArray[ Math.floor( Math.random() * possibleMovesArray.length) ]
+}
+
+function mainLogic(){
   if (changesToBoard()) { //player chooses, if they make changes to the board, switch turn
     updateBoardEl();
+    switchTurn(); //switch turn to opponent
+
+ switch (players) {
+   case 1:
+   //versus computer
+   let cpuChoice = null;
+
+   while (turn === 1 && canMakeMove()) { //while it is the computers turn and it can make a move
+     cpuChoice = CPUChoice(); //returns object with x and y coordinates of turn choice
+     flipDiscs(cpuChoice.x, cpuChoice.y); //flips disk based on coordinates
+     updateBoardEl(); //updates Board on page
+     switchTurn(); //switch turn back to players
+
+     if (!canMakeMove()) { //if player cannot make a move, switch back to computer
+       console.log("player cannot make move");
+       switchTurn(); //switch turn back to computer
+       }
+    } //while loop breaks if computer cannot make move after player has had opportunity
+   console.log("computer cannot make move")
+
+   if (!canMakeMove()) {//if opposition can not make move, switch turn back to player
+    console.log('double check');
     switchTurn();
-    if (!canMakeMove()) {//if opposition can not make move, switch turn back to player
-      console.log('opposing player cannot make move');
-      switchTurn();
-      if (!canMakeMove()) { //if player cannot make a second move, game is over.
-        displayGameOverMessage();
+    if (!canMakeMove()) { //if player cannot make a second move, game is over.
+      console.log('nobody can make a move')
+      displayGameOverMessage();
+      setTimeout(newGame, 7000);
       }
     }
+   break;
+   //versus player
+   case 2:
+   if (!canMakeMove()) {//if opposition can not make move, switch turn back to player
+    console.log('opposing player cannot make move');
+    switchTurn();
+    if (!canMakeMove()) { //if player cannot make a second move, game is over.
+      console.log('nobody can make a move')
+      displayGameOverMessage();
+      setTimeout(newGame, 7000);
+      }
+    }
+     break;
+   }
   }
 }
 
@@ -146,8 +273,13 @@ function displayGameOverMessage(){
   body.appendChild(gameOverBox);
 }
 
-function canMakeMove(){
+function removeGameOverMessage(){
+  const gameOver = document.querySelector('.gameOver');
+  const body = document.body;
+  body.removeChild(gameOver);
+}
 
+function possibleMoves(){
   const possibleMoves = [];
   for (let y = 0; y < board.length; y++) {//loop through board
     for (let x = 0; x < board.length; x++) {
@@ -173,7 +305,13 @@ function canMakeMove(){
           }
         }
       }
-    if (possibleMoves.length !== 0) {
+  return possibleMoves;
+}
+
+function canMakeMove(){
+  const possibleMovesArray = possibleMoves();
+
+    if (possibleMovesArray.length !== 0) {
       return true;
     } else {
       return false;
