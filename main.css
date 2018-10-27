@@ -4,12 +4,9 @@
   box-sizing: border-box;
 }
 
-html {
-  height: 100%;
-}
 
 body {
-  min-height: 100%;
+  height: 100vh;
   background-image: url("./images/wood-background.jpg");
   background-size: cover;
   display: flex;
@@ -116,12 +113,11 @@ h4 {
 .turnBox {
   position:absolute;
   top:  33%;
-
 }
 
 #turnColor {
   margin: 50px 0;
-  font-size: 115px;
+  font-size: 17vh;
   font-family: 'Permanent Marker', cursive;
   transform: rotateZ(-45deg);
 }
@@ -157,6 +153,7 @@ h4 {
   align-items: center;
   height: 630px;
   width: 630px;
+  margin: auto;
 }
 
 .space {
@@ -198,4 +195,69 @@ h4 {
 
 #gameWinner {
   color: black;
+}
+
+
+/*  Media queries */
+
+
+@media all screen and (max-width: 635px;) {
+    #board {
+      display:  none;
+    }
+
+    aside {
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 180px;
+    }
+
+    a {
+      font-size: 50px;
+    }
+
+    nav {
+      height: 150px;
+    }
+
+    p {
+      font-size: 40px;
+      line-height: 40px;
+    }
+
+    #startButton {
+      width: 600px;
+      height: 180px;
+      font-size: 75px;
+    }
+
+    .details {
+      padding: 35px;
+    }
+
+    li {
+      font-size: 30px;
+      padding: 20px;
+    }
+
+
+  /*  After start button is pressed */
+
+    .turnBox {
+      margin: 0 auto;
+      position:relative;
+    }
+
+    #turnColor {
+      font-size: 200px;
+      font-family: 'Permanent Marker', cursive;
+      transform: rotateZ(0deg);
+    }
+
+    #playerButton {
+      display: none;
+    }
+
 }

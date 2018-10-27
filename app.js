@@ -464,6 +464,12 @@ function removeStartPanelContents(){
 function minimizeStartPanel(){
   const aside = document.querySelector('aside');
   aside.style.width = "0%";
+  displayBoard();
+}
+
+function displayBoard(){
+  const board = document.querySelector('#board');
+  board.display = "flex";
 }
 
 function displayDescription(){
