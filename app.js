@@ -1,3 +1,5 @@
+//Global bindings
+
 let board = [
   ["x","x","x","x","x","x","x","x"],
   ["x","x","x","x","x","x","x","x"],
@@ -21,44 +23,12 @@ let boardChanges = [
 let turn = 0;
 let players = 1;
 
-function runGame(){
-  createStartPanel();
-  createSpaces();
-  updateBoardEl();
-}
-
-function startGame(){
-  newGameDiscs();
-  updateBoardEl();
-  removeStartPanelContents();
-  minimizeStartPanel();
-  createTurnDiv();
-  addSpaceListeners();
-  addPlayerButton();
-}
-
-function newGame(){
-  removeGameOverMessage();
-  turn = 0;
-  board = [
-    ["x","x","x","x","x","x","x","x"],
-    ["x","x","x","x","x","x","x","x"],
-    ["x","x","x","x","x","x","x","x"],
-    ["x","x","x","x","x","x","x","x"],
-    ["x","x","x","x","x","x","x","x"],
-    ["x","x","x","x","x","x","x","x"],
-    ["x","x","x","x","x","x","x","x"],
-    ["x","x","x","x","x","x","x","x"]
-  ]
-  clearBoard();
-  newGameDiscs();
-  updateBoardEl()
-  createTurnDiv();
-}
+// Functions determining number of Players
 
 function onePlayer(){
   players = 1;
 }
+
 function twoPlayer(){
   players = 2;
 }
@@ -67,12 +37,35 @@ function gameIs1Player(){
   return players === 1;
 }
 
+//Functions affecting the DOM
+
+function updateChoice(e){
+  //set choice to dataset values of clicked element
+    const clickedSpace = e.target;
+    const choice = {
+      x: parseInt( clickedSpace.dataset.x ),
+      y: parseInt( clickedSpace.dataset.y )
+    };
+
+  boardChangesUpdate();
+
+  flipDiscs(choice.x, choice.y);
+
+  mainLogic();
+
+}
+
+
+
 function addPlayerButton(){
-  const body = document.querySelector('body');
+  const rootEl = document.querySelector('#root');
+  const playerButtonDiv = document.createElement('div');
   const playerButton = document.createElement('button');
+  playerButtonDiv.className = "playerButtonBox";
   playerButton.id = "playerButton";
   playerButton.innerHTML = "2 Players";
-  body.appendChild(playerButton);
+  playerButtonDiv.appendChild(playerButton);
+  rootEl.appendChild(playerButtonDiv);
 
   playerButton.addEventListener('click', changeTo2Players);
 }
@@ -95,290 +88,14 @@ function changeTo1Player(){
   playerButton.addEventListener('click', changeTo2Players);
 }
 
-function updateChoice(e){
-  //set choice to dataset values of clicked element
-    const clickedSpace = e.target;
-    const choice = {
-      x: parseInt( clickedSpace.dataset.x ),
-      y: parseInt( clickedSpace.dataset.y )
-    };
-  boardChangesUpdate();
+function createBoard(){
+  const rootEl = document.querySelector('#root');
+  const board = document.createElement('div');
+  board.id = "board";
 
-  flipDiscs(choice.x, choice.y);
+  rootEl.appendChild(board);
 
-  mainLogic();
-
-}
-
-//Fisher-Yates Shuffle
-function shuffle(array) {
-  let currentIndex = array.length, temporaryValue, randomIndex;
-
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
-
-function CPUChoice(){
-  let possibleMovesArray = possibleMoves();
-  possibleMovesArray = shuffle(possibleMovesArray);
-  return possibleMovesArray[ Math.floor( Math.random() * possibleMovesArray.length) ]
-}
-
-function mainLogic(){
-  if (changesToBoard()) { //player chooses, if they make changes to the board, switch turn
-    updateBoardEl();
-    switchTurn(); //switch turn to opponent
-
- switch (players) {
-   case 1:
-   //versus computer
-   let cpuChoice = null;
-
-   while (turn === 1 && canMakeMove()) { //while it is the computers turn and it can make a move
-     cpuChoice = CPUChoice(); //returns object with x and y coordinates of turn choice
-     flipDiscs(cpuChoice.x, cpuChoice.y); //flips disk based on coordinates
-     updateBoardEl(); //updates Board on page
-     switchTurn(); //switch turn back to players
-
-     if (!canMakeMove()) { //if player cannot make a move, switch back to computer
-       console.log("player cannot make move");
-       switchTurn(); //switch turn back to computer
-       }
-    } //while loop breaks if computer cannot make move after player has had opportunity
-   console.log("computer cannot make move")
-
-   if (!canMakeMove()) {//if opposition can not make move, switch turn back to player
-    console.log('double check');
-    switchTurn();
-    if (!canMakeMove()) { //if player cannot make a second move, game is over.
-      console.log('nobody can make a move')
-      displayGameOverMessage();
-      setTimeout(newGame, 7000);
-      }
-    }
-   break;
-   //versus player
-   case 2:
-   if (!canMakeMove()) {//if opposition can not make move, switch turn back to player
-    console.log('opposing player cannot make move');
-    switchTurn();
-    if (!canMakeMove()) { //if player cannot make a second move, game is over.
-      console.log('nobody can make a move')
-      displayGameOverMessage();
-      setTimeout(newGame, 7000);
-      }
-    }
-     break;
-   }
-  }
-}
-
-function addSpaceListeners(){
-  const spaces = document.querySelectorAll('.space');
-  for (var i = 0; i < spaces.length; i++) {
-    const space = spaces[i];
-    space.addEventListener('click', updateChoice);
-  }
-}
-
-function addStartButtonListener(){
-  const startButton = document.querySelector('#startButton');
-  startButton.addEventListener('click', startGame);
-}
-
-function addDescriptionListener(){
-  const description = document.querySelector('#descriptionLink');
-  description.addEventListener('click', displayDescription);
-}
-
-function removeDescriptionListener(){
-  const description = document.querySelector('#descriptionLink');
-  description.removeEventListener('click', displayDescription);
-}
-
-function addRulesListener(){
-  const rules = document.querySelector('#rulesLink');
-  rules.addEventListener('click', displayRules);
-}
-
-function removeRulesListener(){
-  const rules = document.querySelector('#rulesLink');
-  rules.removeEventListener('click', displayRules);
-}
-
-function winner(){
-  const piecesOnBoard = countPieces();
-  const blackPieces = piecesOnBoard.black;
-  const whitePieces = piecesOnBoard.white;
-
-  if (blackPieces > whitePieces) {
-    return "Black Wins!";
-  } else if (whitePieces > blackPieces) {
-    return "White Wins!";
-  } else if (blackPieces === whitePieces) {
-    return "Tie!";
-  }
-}
-
-function displayGameOverMessage(){
-  const body = document.querySelector('body');
-  const board = document.querySelector('#board');
-  const gameOverBox = document.createElement('div');
-  // const gameOverCondition = document.createElement('h3');
-  const gameWinner = document.createElement('h1');
-  const gameOverScoreBoard = document.createElement('div');
-  // const gameOverScoreTitle = document.createElement('h3');
-  const gameOverScoreBlack = document.createElement('h2');
-  const gameOverScoreWhite = document.createElement('h2');
-
-  gameOverBox.className = "gameOver";
-  gameWinner.id = "gameWinner";
-  gameOverScoreBoard.className = "scoreboard";
-  gameOverScoreBlack.id = "scoreBlack";
-  gameOverScoreWhite.id = "scoreWhite";
-  // gameOverCondition.innerHTML = 'Neither player can make a move';
-  gameWinner.innerHTML = `${winner()}`;
-
-  const piecesOnBoard = countPieces();
-  const blackPieces = piecesOnBoard.black;
-  const whitePieces = piecesOnBoard.white;
-
-  // gameOverScoreTitle.innerText = "Score";
-  gameOverScoreBlack.innerHTML = `Black - ${blackPieces}`;
-  gameOverScoreWhite.innerHTML = `White - ${whitePieces}`;
-
-  // gameOverScoreBoard.appendChild(gameOverScoreTitle);
-  gameOverScoreBoard.appendChild(gameOverScoreBlack);
-  gameOverScoreBoard.appendChild(gameOverScoreWhite);
-  gameOverBox.appendChild(gameOverScoreBoard);
-  // gameOverBox.appendChild(gameOverCondition);
-  gameOverBox.appendChild(gameWinner);
-  gameOverBox.appendChild(gameOverScoreBoard);
-
-
-  const turnBox = document.querySelector('.turnBox');
-  body.removeChild(turnBox);
-  body.appendChild(gameOverBox);
-}
-
-function removeGameOverMessage(){
-  const gameOver = document.querySelector('.gameOver');
-  const body = document.body;
-  body.removeChild(gameOver);
-}
-
-function possibleMoves(){
-  const possibleMoves = [];
-  for (let y = 0; y < board.length; y++) {//loop through board
-    for (let x = 0; x < board.length; x++) {
-      if (board [y][x] === 'x') { // if board space is empty
-
-        //find all opposing discs with player disc at end - returns multi
-        const opposingDiscs = checkDisc(x, y); // returns multi-dimensional array
-        for (let a = 0; a < opposingDiscs.length; a++) {
-          let layer1 = opposingDiscs[a];
-          for (let b = 0; b < layer1.length; b++) {
-            let layer2 = opposingDiscs[a][b];
-
-              if (layer2.length !== 0) {
-                possibleMoves.push(
-                    {
-                      x: x,
-                      y: y
-                    }
-                  );
-                }
-              }
-            }
-          }
-        }
-      }
-  return possibleMoves;
-}
-
-function canMakeMove(){
-  const possibleMovesArray = possibleMoves();
-
-    if (possibleMovesArray.length !== 0) {
-      return true;
-    } else {
-      return false;
-    }
-}
-
-function flipDiscs(x, y){
-    if ( board[y][x] === 'x' ) { //if the origin is a blank space and not a disc
-      const opposingDiscs = checkDisc(x, y); //find all opposing discs with player disc at end
-      for (let a = 0; a < opposingDiscs.length; a++) {
-        let layer1 = opposingDiscs[a]; // accessing elements in checkDisc array
-        for (let b = 0; b < layer1.length; b++) {
-          let layer2 = opposingDiscs[a][b]; //accessing elements in 4 sub arrays (H, V, DBS, DFS)
-          for (let c = 0; c < layer2.length; c++) {
-            let disc = opposingDiscs[a][b][c]; //accessing elements in 8 sub arrays (U, D, L, R, BSU, BSD, FSU, FSD)
-              //flip disc
-              board[y][x] = turn;
-              board[disc.y][disc.x] = turn;
-          }
-        }
-      }
-    }
-}
-
-function changesToBoard(){
-  let sumChanges = 0;
-  for (let y = 0; y < board.length; y++) {
-    for (let x = 0; x < board.length; x++) {
-      let previousState = boardChanges[y][x];
-      let currentState = board[y][x];
-      if (!(previousState === currentState)) {
-        sumChanges +=1;
-      }
-    }
-  }
-
-  return sumChanges > 0;
-}
-
-function boardChangesUpdate(){
-  for (let y = 0; y < board.length; y++) {
-    for (let x = 0; x < board.length; x++) {
-      boardChanges[y][x] = board[y][x];
-    }
-  }
-}
-
-function countPieces(){
-  let countBlack = 0;
-  let countWhite = 0;
-  for (let y = 0; y < board.length; y++) {
-    for (let x = 0; x < board.length; x++) {
-      switch (board[y][x]) {
-        case 0:
-          countBlack += 1;
-          break;
-        case 1:
-          countWhite += 1;
-          break;
-        default:
-      }
-    }
-  }
-  return {
-    black: countBlack,
-    white: countWhite
-  }
+  createSpaces();
 }
 
 function clearBoard(){
@@ -435,7 +152,7 @@ function updateBoardEl(){
 }
 
 function createStartPanel(){
-  const body = document.body;
+  const rootEl = document.querySelector('#root');
   const aside = document.createElement('aside');
   aside.innerHTML = `
 
@@ -449,7 +166,7 @@ function createStartPanel(){
   <div class = "details">
   </div>
   `;
-  body.insertBefore(aside, body.firstChild);
+  rootEl.insertBefore(aside, rootEl.firstChild);
   displayDescription();
 }
 
@@ -461,27 +178,38 @@ function removeStartPanelContents(){
 
 }
 
-function minimizeStartPanel(){
+function hideStartPanel(){
   const aside = document.querySelector('aside');
-  aside.style.width = "0%";
-  displayBoard();
+  aside.style.display = "none";
 }
+
 
 function displayBoard(){
   const board = document.querySelector('#board');
-  board.display = "flex";
+  board.style.display = "grid";
 }
 
 function displayDescription(){
   const details = document.querySelector('.details');
-  details.innerHTML = `
+  details.innerHTML =
+  `
   <div>
-    <p> <strong>Othello</strong> (<span>or Reversi</span>) is a strategy board game for two players, played on an 8×8 uncheckered board. There are sixty-four identical game pieces called discs, which are light on one side and dark on the other. Players take turns placing disks on the board with their assigned color facing up.</p>
+    <p>
+      <strong>Othello</strong> (<span>or Reversi</span>) is a strategy
+      board game for two players, played on an 8×8 uncheckered board. There
+      are sixty-four identical game pieces called discs, which are light on
+      one side and dark on the other. Players take turns placing disks on
+      the board with their assigned color facing up.
+    </p>
   </div>
   <div>
     <h4>Objective</h4>
-
-    <p>The player with the most pieces of their kind on the board after all valid moves have been completed wins the game. In order to achieve this, players can take over other pieces by <span>"outflanking"</span> them.</p>
+    <p>
+      The player with the most pieces of their kind on the board after
+      all valid moves have been completed wins the game. In order to achieve
+      this, players can take over other pieces by <span>"outflanking"</span>
+      them.
+    </p>
   </div>
   `;
   removeDescriptionListener();
@@ -492,7 +220,8 @@ function displayDescription(){
 
 function displayRules(){
   const details = document.querySelector('.details');
-  details.innerHTML = `
+  details.innerHTML =
+  `
     <ul>
       <li>Black always moves first.</li>
       <li>If on your turn you can not outflank and flip at least one opposing disc, your turn is forfeited and your opponent moves again. However if a move is available to you, you may not forfeit your turn.</li>
@@ -541,20 +270,16 @@ function createSpaces(){
 }
 
 function createTurnDiv(){
-  const body = document.body;
+  const rootEl = document.querySelector('#root');
   const turnDiv = document.createElement('div');
-  // const title = document.createElement('h2');
   const turn = document.createElement('h3');
   turnDiv.className = 'turnBox';
-  // title.id = 'turnTitle';
   turn.id = 'turnColor';
 
-  // title.innerText = "Turn:";
   turn.innerText = `${turnColor()}`;
 
-  // turnDiv.appendChild(title);
   turnDiv.appendChild(turn);
-  body.appendChild(turnDiv);
+  rootEl.appendChild(turnDiv);
 
 
 }
@@ -564,6 +289,201 @@ function changeColor(){
   turn.innerText = `${turnColor()}`;
   turn.style.color = `${turnColor()}`;
 
+}
+
+function displayGameOverMessage(){
+  const rootEl = document.querySelector('#root');
+  const board = document.querySelector('#board');
+  const gameOverBox = document.createElement('div');
+  const gameWinner = document.createElement('h1');
+  const gameOverScoreBoard = document.createElement('div');
+  const gameOverScoreBlack = document.createElement('h2');
+  const gameOverScoreWhite = document.createElement('h2');
+
+  gameOverBox.className = "gameOver";
+  gameWinner.id = "gameWinner";
+  gameOverScoreBoard.className = "scoreboard";
+  gameOverScoreBlack.id = "scoreBlack";
+  gameOverScoreWhite.id = "scoreWhite";
+  gameWinner.innerHTML = `${winner()}`;
+
+  const piecesOnBoard = countPieces();
+  const blackPieces = piecesOnBoard.black;
+  const whitePieces = piecesOnBoard.white;
+
+  gameOverScoreBlack.innerHTML = `Black - ${blackPieces}`;
+  gameOverScoreWhite.innerHTML = `White - ${whitePieces}`;
+
+  gameOverScoreBoard.appendChild(gameOverScoreBlack);
+  gameOverScoreBoard.appendChild(gameOverScoreWhite);
+  gameOverBox.appendChild(gameOverScoreBoard);
+  gameOverBox.appendChild(gameWinner);
+  gameOverBox.appendChild(gameOverScoreBoard);
+
+  const turnBox = document.querySelector('.turnBox');
+  rootEl.removeChild(turnBox);
+  rootEl.appendChild(gameOverBox);
+}
+
+function removeGameOverMessage(){
+  const gameOver = document.querySelector('.gameOver');
+  const rootEl = document.querySelector('#root');
+  rootEl.removeChild(gameOver);
+}
+
+//Event Listeners
+
+function addStartButtonListener(){
+  const startButton = document.querySelector('#startButton');
+  startButton.addEventListener('click', startGame);
+}
+
+function addDescriptionListener(){
+  const description = document.querySelector('#descriptionLink');
+  description.addEventListener('click', displayDescription);
+}
+
+function removeDescriptionListener(){
+  const description = document.querySelector('#descriptionLink');
+  description.removeEventListener('click', displayDescription);
+}
+
+function addRulesListener(){
+  const rules = document.querySelector('#rulesLink');
+  rules.addEventListener('click', displayRules);
+}
+
+function removeRulesListener(){
+  const rules = document.querySelector('#rulesLink');
+  rules.removeEventListener('click', displayRules);
+}
+
+function addSpaceListeners(){
+  const spaces = document.querySelectorAll('.space');
+  for (var i = 0; i < spaces.length; i++) {
+    const space = spaces[i];
+    space.addEventListener('click', updateChoice);
+  }
+}
+
+//Game Logic - Helper Functions
+
+function possibleMoves(){
+  const possibleMoves = [];
+  for (let y = 0; y < board.length; y++) {//loop through board
+    for (let x = 0; x < board.length; x++) {
+      if (board [y][x] === 'x') { // if board space is empty
+
+        //find all opposing discs with player disc at end - returns multi
+        const opposingDiscs = checkDisc(x, y); // returns multi-dimensional array
+        for (let a = 0; a < opposingDiscs.length; a++) {
+          let layer1 = opposingDiscs[a];
+          for (let b = 0; b < layer1.length; b++) {
+            let layer2 = opposingDiscs[a][b];
+
+              if (layer2.length !== 0) {
+                possibleMoves.push(
+                  {
+                    x: x,
+                    y: y
+                  }
+                );
+              }
+            }
+          }
+        }
+      }
+    }
+  return possibleMoves;
+}
+
+function canMakeMove(){
+  const possibleMovesArray = possibleMoves();
+  if (possibleMovesArray.length !== 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function flipDiscs(x, y){
+  if ( board[y][x] === 'x' ) { //if the origin is a blank space and not a disc
+
+    const opposingDiscs = checkDisc(x, y); //find all opposing discs with player disc at end
+
+    for (let a = 0; a < opposingDiscs.length; a++) {
+      let layer1 = opposingDiscs[a]; // accessing elements in checkDisc array
+
+      for (let b = 0; b < layer1.length; b++) {
+        let layer2 = opposingDiscs[a][b]; //accessing elements in 4 sub arrays (H, V, DBS, DFS)
+
+        for (let c = 0; c < layer2.length; c++) {
+          let disc = opposingDiscs[a][b][c]; //accessing elements in 8 sub arrays (U, D, L, R, BSU, BSD, FSU, FSD)
+
+          //flip disc
+          board[y][x] = turn;
+          board[disc.y][disc.x] = turn;
+        }
+      }
+    }
+  }
+}
+
+function changesToBoard(){
+  let sumChanges = 0;
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board.length; x++) {
+      let previousState = boardChanges[y][x];
+      let currentState = board[y][x];
+      if (!(previousState === currentState)) {
+        sumChanges +=1;
+      }
+    }
+  }
+  return sumChanges > 0;
+}
+
+function boardChangesUpdate(){
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board.length; x++) {
+      boardChanges[y][x] = board[y][x];
+    }
+  }
+}
+
+function countPieces(){
+  let countBlack = 0;
+  let countWhite = 0;
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board.length; x++) {
+      switch (board[y][x]) {
+        case 0:
+          countBlack += 1;
+          break;
+        case 1:
+          countWhite += 1;
+          break;
+      }
+    }
+  }
+  return {
+    black: countBlack,
+    white: countWhite
+  }
+}
+
+function winner(){
+  const piecesOnBoard = countPieces();
+  const blackPieces = piecesOnBoard.black;
+  const whitePieces = piecesOnBoard.white;
+
+  if (blackPieces > whitePieces) {
+    return "Black Wins!";
+  } else if (whitePieces > blackPieces) {
+    return "White Wins!";
+  } else if (blackPieces === whitePieces) {
+    return "Tie!";
+  }
 }
 
 function newGameDiscs(){
@@ -605,6 +525,14 @@ function opposition(){
   }
 }
 
+function CPUChoice(){
+  let possibleMovesArray = possibleMoves();
+  possibleMovesArray = shuffle(possibleMovesArray);
+  return possibleMovesArray[ Math.floor( Math.random() * possibleMovesArray.length) ]
+}
+
+//Logic for checking disc location
+
 function checkDisc(x,y){
   const opposingDiscs = [];
   const vertical = checkVertical(x,y);
@@ -641,6 +569,7 @@ function checkVertical(x,y){
 function checkDown(x,y){
   let opposingDiscs = [];
   let i = y + 1;
+
   while (i < board.length) {
 
     switch (board[i][x]) {
@@ -672,6 +601,7 @@ function checkDown(x,y){
 function checkUp(x,y){
   let opposingDiscs = [];
   let i = y - 1;
+
   while (i >= 0) {
 
     switch (board[i][x]) {
@@ -714,6 +644,7 @@ function checkHorizontal(x,y){
 function checkLeft(x,y){
   let opposingDiscs = [];
   let i = x - 1;
+
   while (i >= 0) {
 
     switch (board[y][i]) {
@@ -745,6 +676,7 @@ function checkLeft(x,y){
 function checkRight(x,y){
   let opposingDiscs = [];
   let i = x + 1;
+
   while (i < board.length) {
 
     switch (board[y][i]) {
@@ -788,6 +720,7 @@ function checkDiagonalBackSlashUp(x,y){
   let opposingDiscs = [];
   let x2 = x + 1;
   let y2 = y - 1;
+
   while (x2 < board.length && y2 >= 0) {
 
     switch (board[y2][x2]) {
@@ -821,7 +754,7 @@ function checkDiagonalBackSlashDown(x,y){
   let opposingDiscs = [];
   let x2 = x - 1;
   let y2 = y + 1;
-  //check if 8
+
   while (x2 >= 0 && y2 < board.length) {
 
     switch (board[y2][x2]) {
@@ -866,6 +799,7 @@ function checkDiagonalForwardSlashUp(x,y){
   let opposingDiscs = [];
   let x2 = x - 1;
   let y2 = y - 1;
+
   while (x2 >= 0 && y2 >= 0) {
 
     switch (board[y2][x2]) {
@@ -899,6 +833,7 @@ function checkDiagonalForwardSlashDown(x,y){
   let opposingDiscs = [];
   let x2 = x + 1;
   let y2 = y + 1;
+
   while (x2 < board.length && y2 < board.length) {
 
     switch (board[y2][x2]) {
@@ -926,6 +861,122 @@ function checkDiagonalForwardSlashDown(x,y){
     x2 += 1;
     y2 += 1;
   }
+}
+
+//Fisher-Yates Shuffle
+function shuffle(array) {
+  let currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+//Main Logic and Calls
+
+function mainLogic(){
+  if (changesToBoard()) { //player chooses, if they make changes to the board, switch turn
+    updateBoardEl();
+    switchTurn(); //switch turn to opponent
+
+ switch (players) {
+   case 1:
+   //versus computer
+   let cpuChoice = null;
+
+   while (turn === 1 && canMakeMove()) { //while it is the computers turn and it can make a move
+     cpuChoice = CPUChoice(); //returns object with x and y coordinates of turn choice
+     flipDiscs(cpuChoice.x, cpuChoice.y); //flips disk based on coordinates
+     updateBoardEl(); //updates Board on page
+     switchTurn(); //switch turn back to players
+
+     if (!canMakeMove()) { //if player cannot make a move, switch back to computer
+       console.log("player cannot make move");
+       switchTurn(); //switch turn back to computer
+       }
+    } //while loop breaks if computer cannot make move after player has had opportunity
+   console.log("computer cannot make move")
+
+   if (!canMakeMove()) {//if opposition can not make move, switch turn back to player
+    console.log('double check');
+    switchTurn();
+    if (!canMakeMove()) { //if player cannot make a second move, game is over.
+      console.log('nobody can make a move')
+      displayGameOverMessage();
+      setTimeout(newGame, 7000);
+      }
+    }
+   break;
+   //versus player
+   case 2:
+   if (!canMakeMove()) {//if opposition can not make move, switch turn back to player
+    console.log('opposing player cannot make move');
+    switchTurn();
+    if (!canMakeMove()) { //if player cannot make a second move, game is over.
+      console.log('nobody can make a move')
+      displayGameOverMessage();
+      setTimeout(newGame, 7000);
+      }
+    }
+     break;
+   }
+  }
+}
+
+function createBoard(){
+  const rootEl = document.querySelector('#root');
+  const board = document.createElement('div');
+  board.id = "board";
+
+  rootEl.appendChild(board);
+
+  createSpaces();
+  displayBoard();
+}
+
+function runGame(){
+  createStartPanel();
+}
+
+function startGame(){
+  // removeStartPanelContents();
+  hideStartPanel();
+  createTurnDiv();
+  createBoard();
+  newGameDiscs();
+  updateBoardEl();
+  addSpaceListeners();
+  addPlayerButton();
+}
+
+function newGame(){
+  removeGameOverMessage();
+  turn = 0;
+  board = [
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"],
+    ["x","x","x","x","x","x","x","x"]
+  ]
+  clearBoard();
+  newGameDiscs();
+  updateBoardEl()
+  createTurnDiv();
 }
 
 runGame();

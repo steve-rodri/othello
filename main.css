@@ -4,29 +4,25 @@
   box-sizing: border-box;
 }
 
-
-body {
+#root {
   height: 100vh;
   background-image: url("./images/wood-background.jpg");
   background-size: cover;
-  display: flex;
-  z-index: -2;
 }
 
 aside {
-  display: flex;
-  flex-direction: column;
-  color: white;
   background: rgba(15, 15, 15, .8);
-  width: 33%;
+  color: white;
+  width: 100%;
+  height: 100vh;
   border-right: 2px solid rgba(0, 0, 0, 0.5);
 }
 
 nav {
+  background-color: rgba(50,50,50, .7);
   display: flex;
   align-items: center;
   justify-content: space-around;
-  background-color: rgba(50,50,50, .7);
   height: 40px;
 }
 
@@ -52,9 +48,9 @@ a:hover {
 h1 {
   color: white;
   text-align: center;
-  margin: 20px 0;
   font-size: 50px;
   font-family: sans-serif;
+  padding: 20px 0;
 }
 
 p {
@@ -91,7 +87,7 @@ h4 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 100px auto 0 auto;
+  margin: 50px auto;
   padding: 0 0 50px 0;
   align-self: flex-end;
 }
@@ -110,59 +106,55 @@ h4 {
   cursor: pointer;
 }
 
-.turnBox {
-  position:absolute;
-  top:  33%;
+#turnColor {
+  font-size: 6vh;
+  font-family: 'Permanent Marker', cursive;
+  text-align: center;
 }
 
-#turnColor {
-  margin: 50px 0;
-  font-size: 17vh;
-  font-family: 'Permanent Marker', cursive;
-  transform: rotateZ(-45deg);
+.playerButtonBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 25px auto;
 }
 
 #playerButton {
-  position:absolute;
-  left: 84%;
-  width: 200px;
-  height: 60px;
+  display: none;
+  width: 35vh;
+  height: 10vh;
   font-size: 25px;
-  background-color: rgba(0,255,75,.7);
+  background-color: rgba(100,170,255,1);
   color: white;
-  border: 2px solid rgba(0,255,75,.7);
+  border: 2px solid rgba(100,170,255,1);
   border-radius: 5px;
 
 }
 
 #playerButton:hover {
   cursor: pointer;
+  background-color: rgba(150,200,255,1);
 }
-
-
 
 #board {
   background-image: url("./images/green-felt.jpg");
   background-size: cover;
-  border: 15px solid rgba(0, 0, 0, 0.9);
+  border: 1.5vh solid rgba(0, 0, 0, 0.9);
   border-radius: 8px;
-  margin: auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  height: 630px;
-  width: 630px;
+  margin: 0 auto;
+  display: grid;
+  grid-template: repeat(8, 1fr) / repeat(8, 1fr);
+  height: 90vh;
+  width: 90vh;
   margin: auto;
 }
 
 .space {
-  border: 2.5px solid hsla(360, 0%, 80%, .8);
+  border: .38vh solid hsla(360, 0%, 80%, .8);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 75px;
-  width: 75px;
+
 }
 
 .space:hover {
@@ -170,8 +162,8 @@ h4 {
 }
 
 .disc {
-  height: 55px;
-  width: 55px;
+  height: 8vh;
+  width: 8vh;
   border-radius: 100%;
   margin: auto;
   z-index: 1;
@@ -201,63 +193,45 @@ h4 {
 /*  Media queries */
 
 
-@media all screen and (max-width: 635px;) {
-    #board {
-      display:  none;
-    }
+@media all screen and (max-width: 635px) {
+  #board {
+    display:  none;
+  }
 
-    aside {
-      width: 100%;
-    }
+  aside {
+    width: 100%;
+  }
 
-    h1 {
-      font-size: 180px;
-    }
+  h1 {
+    font-size: 180px;
+  }
 
-    a {
-      font-size: 50px;
-    }
+  a {
+    font-size: 50px;
+  }
 
-    nav {
-      height: 150px;
-    }
+  nav {
+    height: 150px;
+  }
 
-    p {
-      font-size: 40px;
-      line-height: 40px;
-    }
+  p {
+    font-size: 40px;
+    line-height: 40px;
+  }
 
-    #startButton {
-      width: 600px;
-      height: 180px;
-      font-size: 75px;
-    }
+  #startButton {
+    width: 600px;
+    height: 180px;
+    font-size: 75px;
+  }
 
-    .details {
-      padding: 35px;
-    }
+  .details {
+    padding: 35px;
+  }
 
-    li {
-      font-size: 30px;
-      padding: 20px;
-    }
-
-
-  /*  After start button is pressed */
-
-    .turnBox {
-      margin: 0 auto;
-      position:relative;
-    }
-
-    #turnColor {
-      font-size: 200px;
-      font-family: 'Permanent Marker', cursive;
-      transform: rotateZ(0deg);
-    }
-
-    #playerButton {
-      display: none;
-    }
+  li {
+    font-size: 30px;
+    padding: 20px;
+  }
 
 }
