@@ -8,6 +8,7 @@
   height: 100vh;
   background-image: url("./images/wood-background.jpg");
   background-size: cover;
+  overflow: scroll;
 }
 
 aside {
@@ -110,6 +111,7 @@ h4 {
   font-size: 6vh;
   font-family: 'Permanent Marker', cursive;
   text-align: center;
+  padding: 20px;
 }
 
 .playerButtonBox {
@@ -141,16 +143,15 @@ h4 {
   background-size: cover;
   border: 1.5vh solid rgba(0, 0, 0, 0.9);
   border-radius: 8px;
-  margin: 0 auto;
   display: grid;
   grid-template: repeat(8, 1fr) / repeat(8, 1fr);
-  height: 90vh;
-  width: 90vh;
+  height: 45vh;
+  width: 45vh;
   margin: auto;
 }
 
 .space {
-  border: .38vh solid hsla(360, 0%, 80%, .8);
+  border: .24vh solid hsla(360, 0%, 80%, .8);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -162,8 +163,8 @@ h4 {
 }
 
 .disc {
-  height: 8vh;
-  width: 8vh;
+  height: 4vh;
+  width: 4vh;
   border-radius: 100%;
   margin: auto;
   z-index: 1;
@@ -193,7 +194,7 @@ h4 {
 /*  Media queries */
 
 
-@media all screen and (max-width: 635px) {
+/* @media all screen and (max-width: 635px) { */
   #board {
     display:  none;
   }
