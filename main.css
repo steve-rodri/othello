@@ -3,12 +3,18 @@
   padding: 0;
   box-sizing: border-box;
 }
+body {
+  background: black;
+}
 
 #root {
   height: 100vh;
   background-image: url("./images/wood-background.jpg");
   background-size: cover;
   overflow: scroll;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "title" "game-area";
 }
 
 aside {
@@ -17,6 +23,7 @@ aside {
   width: 100%;
   height: 100vh;
   border-right: 2px solid rgba(0, 0, 0, 0.5);
+  overflow: scroll;
 }
 
 nav {
@@ -24,13 +31,13 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  height: 40px;
+  height: 7vh;
 }
 
 a {
   text-decoration: none;
   color: white;
-  font-size: 20px;
+  font-size: 2.5vh;
   font-family: sans-serif;
 }
 
@@ -49,15 +56,15 @@ a:hover {
 h1 {
   color: white;
   text-align: center;
-  font-size: 50px;
+  font-size: 7vh;
   font-family: sans-serif;
   padding: 20px 0;
 }
 
 p {
   padding: 0 20px;
-  font-size: 20px;
-  line-height: 25px;
+  font-size: 3vh;
+  line-height: 3.5vh;
   color: rgba(255, 255, 255,.8 );
 }
 
@@ -77,7 +84,7 @@ span {
 }
 
 h4 {
-  font-size: 24px;
+  font-size: 3vh;
   padding: 40px 20px 20px 20px;
 
 
@@ -88,15 +95,15 @@ h4 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 50px auto;
-  padding: 0 0 50px 0;
+  margin: 0 auto;
   align-self: flex-end;
+  height: 25%;
 }
 
 #startButton {
-  width: 200px;
-  height: 60px;
-  font-size: 25px;
+  width: 25vh;
+  height: 6vh;
+  font-size: 2.5vh;
   background-color: rgba(0,255,75,.7);
   color: white;
   border: 2px solid rgba(0,255,75,.7);
@@ -112,6 +119,8 @@ h4 {
   font-family: 'Permanent Marker', cursive;
   text-align: center;
   padding: 20px;
+  padding-bottom: 0px;
+  grid-area: "title";
 }
 
 .playerButtonBox {
@@ -141,17 +150,22 @@ h4 {
 #board {
   background-image: url("./images/green-felt.jpg");
   background-size: cover;
-  border: 1.5vh solid rgba(0, 0, 0, 0.9);
+  border-width: 1vh;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.9);
   border-radius: 8px;
   display: grid;
   grid-template: repeat(8, 1fr) / repeat(8, 1fr);
   height: 45vh;
   width: 45vh;
   margin: auto;
+  grid-area: "game-area";
 }
 
 .space {
-  border: .24vh solid hsla(360, 0%, 80%, .8);
+  border-width: .15vh;
+  border-style: solid;
+  border-color: hsla(360, 0%, 80%, .8);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -163,12 +177,26 @@ h4 {
 }
 
 .disc {
-  height: 4vh;
-  width: 4vh;
+  height: 3.5vh;
+  width: 3.5vh;
+  border-bottom-width:.3vh;
+  border-right-width:.2vh;
+  border-style: solid;
   border-radius: 100%;
   margin: auto;
   z-index: 1;
 }
+
+.black {
+  background-color: black;
+  border-color: rgba(255,255,255,.2);
+}
+
+.white {
+  background-color: white;
+  border-color: rgba(0,0,0,.2);
+}
+
 
 .gameOver {
   position: absolute;
@@ -184,6 +212,9 @@ h4 {
   align-items: center;
   font-size: 5vh;
   color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #gameWinner {
@@ -194,45 +225,90 @@ h4 {
 /*  Media queries */
 
 
-/* @media all screen and (max-width: 635px) { */
+@media (min-width: 376px) {
   #board {
-    display:  none;
+    height: 55vh;
+    width: 55vh;
+  }
+
+  .space {
+    border-width: .25vh;
+  }
+
+  .disc {
+
+    height: 4.5vh;
+    width: 4.5vh;
+    border-bottom-width: .3vh;
+    border-right-width: .2vh;
+
+  }
+
+  #turnColor {
+    font-size: 8vh;
+    padding-bottom: 0px;
+  }
+
+}
+
+@media (min-width: 600px) {
+  #board {
+    height: 70vh;
+    width: 70vh;
+    border-width: 1.5vh;
+  }
+
+  .space {
+    border-width: .3vh;
+  }
+
+  .disc {
+
+    height: 6vh;
+    width: 6vh;
+    border-bottom-width: .3vh;
+    border-right-width: .2vh;
+
+  }
+
+  #turnColor {
+    font-size: 12vh;
+  }
+}
+
+@media (min-width: 1150px) {
+  #root {
+    grid-template-rows: 1fr auto;
+    grid-template-columns: 3fr auto 1fr;
+    grid-template-areas:
+    "null null "
+    "title game-area";
   }
 
   aside {
-    width: 100%;
+    width: 50%;
   }
 
-  h1 {
-    font-size: 180px;
+  #board {
+    height: 82vh;
+    width: 82vh;
+    border-width: 1.5vh;
   }
 
-  a {
-    font-size: 50px;
+  .space {
+    border-width: .3vh;
   }
 
-  nav {
-    height: 150px;
+  .disc {
+    height: 7vh;
+    width: 7vh;
+    border-bottom-width: .3vh;
+    border-right-width: .2vh;
   }
 
-  p {
-    font-size: 40px;
-    line-height: 40px;
+  #turnColor {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   }
-
-  #startButton {
-    width: 600px;
-    height: 180px;
-    font-size: 75px;
-  }
-
-  .details {
-    padding: 35px;
-  }
-
-  li {
-    font-size: 30px;
-    padding: 20px;
-  }
-
 }

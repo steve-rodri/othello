@@ -55,7 +55,16 @@ function updateChoice(e){
 
 }
 
+function createBoard(){
+  const rootEl = document.querySelector('#root');
+  const board = document.createElement('div');
+  board.id = "board";
 
+  rootEl.appendChild(board);
+
+  createSpaces();
+  displayBoard();
+}
 
 function addPlayerButton(){
   const rootEl = document.querySelector('#root');
@@ -119,12 +128,10 @@ function updateBoardEl(){
         if (board[y][x] === 0) {
 
           let newDisc = document.createElement('div');
-          newDisc.className = "disc";
+          newDisc.className = "disc black";
           newDisc.dataset.x = `${x}`;
           newDisc.dataset.y = `${y}`;
-          newDisc.style.backgroundColor = "black";
-          newDisc.style.borderBottom = "4px solid rgba(255,255,255,.2)";
-          newDisc.style.borderRight = "3px solid rgba(255,255,255,.2)";
+
           for (var i = 0; i < spaces.length; i++) {
             if (spaces[i].dataset.x === `${x}` && spaces[i].dataset.y === `${y}`) {
               spaces[i].appendChild(newDisc);
@@ -134,12 +141,10 @@ function updateBoardEl(){
         } else if (board[y][x] === 1) {
 
           let newDisc = document.createElement('div');
-          newDisc.className = "disc";
+          newDisc.className = "disc white";
           newDisc.dataset.x = `${x}`;
           newDisc.dataset.y = `${y}`;
-          newDisc.style.backgroundColor = "white";
-          newDisc.style.borderBottom = "4px solid rgba(0,0,0,.2)";
-          newDisc.style.borderRight = "3px solid rgba(0,0,0,.2)";
+
           for (let i = 0; i < spaces.length; i++) {
             if (spaces[i].dataset.x === `${x}` && spaces[i].dataset.y === `${y}`) {
               spaces[i].appendChild(newDisc);
@@ -182,7 +187,6 @@ function hideStartPanel(){
   const aside = document.querySelector('aside');
   aside.style.display = "none";
 }
-
 
 function displayBoard(){
   const board = document.querySelector('#board');
@@ -271,22 +275,17 @@ function createSpaces(){
 
 function createTurnDiv(){
   const rootEl = document.querySelector('#root');
-  const turnDiv = document.createElement('div');
   const turn = document.createElement('h3');
-  turnDiv.className = 'turnBox';
+
   turn.id = 'turnColor';
+  turn.innerText = `${turnColor()}'s turn`;
 
-  turn.innerText = `${turnColor()}`;
-
-  turnDiv.appendChild(turn);
-  rootEl.appendChild(turnDiv);
-
-
+  rootEl.appendChild(turn);
 }
 
 function changeColor(){
   const turn = document.querySelector('#turnColor');
-  turn.innerText = `${turnColor()}`;
+  turn.innerText = `${turnColor()}'s turn`;
   turn.style.color = `${turnColor()}`;
 
 }
@@ -310,7 +309,7 @@ function displayGameOverMessage(){
   const piecesOnBoard = countPieces();
   const blackPieces = piecesOnBoard.black;
   const whitePieces = piecesOnBoard.white;
-
+  
   gameOverScoreBlack.innerHTML = `Black - ${blackPieces}`;
   gameOverScoreWhite.innerHTML = `White - ${whitePieces}`;
 
@@ -320,8 +319,6 @@ function displayGameOverMessage(){
   gameOverBox.appendChild(gameWinner);
   gameOverBox.appendChild(gameOverScoreBoard);
 
-  const turnBox = document.querySelector('.turnBox');
-  rootEl.removeChild(turnBox);
   rootEl.appendChild(gameOverBox);
 }
 
@@ -934,17 +931,6 @@ function mainLogic(){
   }
 }
 
-function createBoard(){
-  const rootEl = document.querySelector('#root');
-  const board = document.createElement('div');
-  board.id = "board";
-
-  rootEl.appendChild(board);
-
-  createSpaces();
-  displayBoard();
-}
-
 function runGame(){
   createStartPanel();
 }
@@ -976,7 +962,7 @@ function newGame(){
   clearBoard();
   newGameDiscs();
   updateBoardEl()
-  createTurnDiv();
+  // createTurnDiv();
 }
 
 runGame();
