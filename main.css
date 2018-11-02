@@ -13,7 +13,7 @@ body {
   background-size: cover;
   overflow: scroll;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: 1fr auto;
   grid-template-areas: "title" "game-area";
 }
 
@@ -86,8 +86,6 @@ span {
 h4 {
   font-size: 3vh;
   padding: 40px 20px 20px 20px;
-
-
 }
 
 .start {
@@ -139,7 +137,6 @@ h4 {
   color: white;
   border: 2px solid rgba(100,170,255,1);
   border-radius: 5px;
-
 }
 
 #playerButton:hover {
@@ -197,7 +194,6 @@ h4 {
   border-color: rgba(0,0,0,.2);
 }
 
-
 .gameOver {
   position: absolute;
   top: 33%;
@@ -225,7 +221,7 @@ h4 {
 /*  Media queries */
 
 
-@media (min-width: 376px) {
+@media screen (min-width: 376px) and screen (max-width: 599px) {
   #board {
     height: 55vh;
     width: 55vh;
@@ -248,10 +244,9 @@ h4 {
     font-size: 8vh;
     padding-bottom: 0px;
   }
-
 }
 
-@media (min-width: 600px) {
+@media screen (min-width: 600px) and screen (max-width: 999px) {
   #board {
     height: 70vh;
     width: 70vh;
@@ -274,9 +269,11 @@ h4 {
   #turnColor {
     font-size: 12vh;
   }
+
+
 }
 
-@media (min-width: 1150px) {
+@media screen (min-width: 1000px) {
   #root {
     grid-template-rows: 1fr auto;
     grid-template-columns: 3fr auto 1fr;
