@@ -12,9 +12,10 @@ body {
   background-image: url("./images/wood-background.jpg");
   background-size: cover;
   overflow: scroll;
-  display: grid;
-  grid-template-rows: 1fr auto;
-  grid-template-areas: "title" "game-area";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 aside {
@@ -119,6 +120,7 @@ h4 {
   padding: 20px;
   padding-bottom: 0px;
   grid-area: "title";
+  /* height: 300px; */
 }
 
 .playerButtonBox {
@@ -155,7 +157,6 @@ h4 {
   grid-template: repeat(8, 1fr) / repeat(8, 1fr);
   height: 45vh;
   width: 45vh;
-  margin: auto;
   grid-area: "game-area";
 }
 
@@ -166,7 +167,6 @@ h4 {
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 .space:hover {
@@ -232,16 +232,14 @@ h4 {
   }
 
   .disc {
-
     height: 4.5vh;
     width: 4.5vh;
     border-bottom-width: .3vh;
     border-right-width: .2vh;
-
   }
 
   #turnColor {
-    font-size: 8vh;
+    font-size: 5vh;
     padding-bottom: 0px;
   }
 }
@@ -273,7 +271,7 @@ h4 {
 
 }
 
-@media screen (min-width: 1000px) {
+@media (min-width: 1050px) {
   #root {
     grid-template-rows: 1fr auto;
     grid-template-columns: 3fr auto 1fr;
