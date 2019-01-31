@@ -98,5 +98,3 @@ function canMakeMove(){
 }
 
 ```
-
-[Website](http://othello-game.surge.sh/)
